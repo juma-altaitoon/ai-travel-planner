@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 
 
 // User Schema
@@ -59,6 +60,12 @@ const userSchema = new mongoose.Schema({
         enum: [ 'user', 'admin' ],
         default: 'user',
     },
+    resetToken: {
+        type: String,
+    },
+    resetTokenExpiry: {
+        type: Date,
+    }
 }, {timestamps: true}
 );
 
@@ -67,7 +74,7 @@ userSchema.pre('save', async function(next){
     if (!this.isModified('password')){
         return next();
     }
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(12);
     this.password = await bcrypt.hash(this.password, salt);
 })
 
@@ -91,3 +98,19 @@ userSchema.methods.generateJWT = async function() {
     return token;
     
 }
+
+// Generate Password Reset Token
+userSchema.methods.generateResetToken = async () => {
+    // Generate a random token using crypto module
+    const token = await crypto.randomBytes(32).toString('hex');
+    // Hash the token and save. (similar concept to password hashing)
+    this.resetToken = crypto.createHash("sha256").update(token).digest("hex");
+    // Set Reset Token Expiry 
+    this.resetTokenExpiry = Date.now() + 1200000; // 20 minutes
+    await this.save();
+    // token is returned
+    return token;
+}
+
+const User = mongoose.model('User', userSchema);
+export default User;

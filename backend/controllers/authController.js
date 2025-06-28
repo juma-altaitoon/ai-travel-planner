@@ -57,10 +57,10 @@ export const login = async (req, res) => {
             console.log("Invalid user credentials.");
             return res.status(401).json({ message: "Invalid user credentials" });
         }
-        const token = await user.generateAuthToken();
+        const token = await user.generateJWT();
         // Save the token in a cookie
         res.cookie(
-            "JWT", 
+            "jwt", 
             token, 
             {
                 maxAge: 60 * 60 * 1000, // 1 hour
@@ -78,8 +78,57 @@ export const login = async (req, res) => {
 
 // Logout
 export const logout = async (req, res) => {
-    res.clearCookie("JWT");
+    res.clearCookie("jwt");
     res.status(200).json({ message: "Logout successful." })
 }
 
-export default { signup, login, logout,  };
+// Forgot Password
+export const forgotPassword = async (req, res) => {
+    const email = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        return res.status(404).json({ message : "User not found." });
+    }
+
+    const resetToken = user.generateResetToken();
+    await user.save();
+
+    const resetURL = `${FRONTEND_URL}/reset/${resetToken}`;
+    // API test
+    return res.status(200).json({ message: "Reset Link sent" , resetURL });
+
+    // Email the reset link
+    // Coming soon...
+}
+
+// Reset/Update Password
+export const resetPassword = async (req, res) => {
+    const { resetToken, newPassword } = req.body
+    const resetTokenHash = await crypto.createHash("sha256").update(resetToken).digest('hex');
+    try {
+        const user = await User.findOne({ 
+            resetToken: resetTokenHash, 
+            resetTokenExpiry: { $gt: Date.now() }, 
+        });
+        if (!user) {
+            return res.status(400).json({ message: "Invalid Token." });
+        }
+        user.password = newPassword;
+        user.resetToken = undefined;
+        user.reserTokenExpiry = undefined;
+        await user.save(). then(() => {
+            return res.status(200).jsom({ message: "Password Reset successful."});
+        })
+        .catch((error) => {
+            console.error("Password Reset Failed: ", error.message);
+            return res.status(500).json({ message: "Password Reset Failed.", error: error.message });
+        })
+    } catch (error) {
+        console.error("Error resetting password: ", error.message);
+        return res.status(500).json({ message: "Error resetting password.", error: error.message });
+    }    
+}
+
+// Exporting the functions
+export default { signup, login, logout, forgotPassword, resetPassword };
