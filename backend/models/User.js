@@ -62,9 +62,11 @@ const userSchema = new mongoose.Schema({
     },
     resetToken: {
         type: String,
+        default: ""
     },
     resetTokenExpiry: {
         type: Date,
+        default: null,
     }
 }, {timestamps: true}
 );
@@ -90,9 +92,9 @@ userSchema.methods.generateJWT = async function() {
         username: this.username,
     }
 
-    const secret = process.env.JWT
+    const secret = process.env.JWT_SECRET;
     const options = {
-        expireIn: process.env.JWT_EXPIRY || '1h',
+        expiresIn: process.env.JWT_EXPIRY || '1h',
     }
     const token = jwt.sign(payload, secret, options);
     return token;
@@ -100,14 +102,13 @@ userSchema.methods.generateJWT = async function() {
 }
 
 // Generate Password Reset Token
-userSchema.methods.generateResetToken = async () => {
+userSchema.methods.generateResetToken = async function() {
     // Generate a random token using crypto module
-    const token = await crypto.randomBytes(32).toString('hex');
+    const token = crypto.randomBytes(32).toString('hex');
     // Hash the token and save. (similar concept to password hashing)
     this.resetToken = crypto.createHash("sha256").update(token).digest("hex");
     // Set Reset Token Expiry 
-    this.resetTokenExpiry = Date.now() + 1200000; // 20 minutes
-    await this.save();
+    this.resetTokenExpiry = (Date.now() + 1200000); // 20 minutes
     // token is returned
     return token;
 }

@@ -6,24 +6,23 @@ dotenv.config();
 
 // Check user authentication (valid JWT)
 export const authenticate = async (req, res, next) => {
-    token = req.cookies.jwt;
+    const token = req.cookies.jwt;
 
     if (!token) {
         return res.status(401).json({ message: "Unauthorized access." });
     }
     try {
         const user = await jwt.verify(token, process.env.JWT_SECRET);
-        req.user = user;
+        req.user = user.id;
         next();
     } catch (error) {
         if (error.name === "TokenExpiredError") {
             console.error("Token expired. ", error);
             return res.status(401).json({ message: "Token expired. Please Login again.", error: error.message})
         }
-        if (error) {
-            console.error(" Authentication error: ", error);
-            return res.status(401).json({ message: "Invalid token. Please login.", error: error.message });
-        }
+        console.error(" Authentication error: ", error);
+        return res.status(401).json({ message: "Invalid token. Please login.", error: error.message });
+        
     }
 }
 

@@ -1,4 +1,13 @@
 import User from '../models/User.js';
+import crypto from 'crypto';
+
+// Test API
+export const testAPI = (req, res) => {
+    if (!req.user){
+        return res.status(401).json({ message: "Unauthorized access."})
+    }
+    return res.status(200).json({ message: "API is working.", user: req.user});
+}
 
 // Signup 
 export const signup = async (req, res) => {
@@ -84,28 +93,35 @@ export const logout = async (req, res) => {
 
 // Forgot Password
 export const forgotPassword = async (req, res) => {
-    const email = req.body;
+    const { email } = req.body;
+    // console.log(email);
     const user = await User.findOne({ email });
 
     if (!user) {
         return res.status(404).json({ message : "User not found." });
     }
 
-    const resetToken = user.generateResetToken();
-    await user.save();
+    const resetToken = await user.generateResetToken();
+    
+    await user.save()
+        .then((savedUSer) => {
+            const resetURL = `"{FRONTEND_URL}"/reset/${resetToken}`;
+            // API test
+            return res.status(200).json({ message: "Reset Link sent" , resetURL });
 
-    const resetURL = `${FRONTEND_URL}/reset/${resetToken}`;
-    // API test
-    return res.status(200).json({ message: "Reset Link sent" , resetURL });
-
-    // Email the reset link
-    // Coming soon...
+            // Email the reset link
+            // Coming soon...
+        })
+        .catch((error) => {
+            console.error("Error setting reset token: ", error.message);
+            return res.status(500).json({ message: "Error setting reset token.", error: error.message });
+        })
 }
 
 // Reset/Update Password
 export const resetPassword = async (req, res) => {
     const { resetToken, newPassword } = req.body
-    const resetTokenHash = await crypto.createHash("sha256").update(resetToken).digest('hex');
+    const resetTokenHash = crypto.createHash("sha256").update(resetToken).digest('hex');
     try {
         const user = await User.findOne({ 
             resetToken: resetTokenHash, 
@@ -118,7 +134,7 @@ export const resetPassword = async (req, res) => {
         user.resetToken = undefined;
         user.reserTokenExpiry = undefined;
         await user.save(). then(() => {
-            return res.status(200).jsom({ message: "Password Reset successful."});
+            return res.status(200).json({ message: "Password Reset successful."});
         })
         .catch((error) => {
             console.error("Password Reset Failed: ", error.message);
@@ -131,4 +147,4 @@ export const resetPassword = async (req, res) => {
 }
 
 // Exporting the functions
-export default { signup, login, logout, forgotPassword, resetPassword };
+export default { signup, login, logout, forgotPassword, resetPassword, testAPI };

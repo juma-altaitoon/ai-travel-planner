@@ -2,15 +2,18 @@ import express from 'express';
 import auth from '../controllers/authController.js';
 import { authenticate, authorize } from '../middleware/authMiddleware.js';
 
-const authrouter = express.Router();
+const authRouter = express.Router();
 
 // Connecting routes to endpoints
+// Test route
+authRouter.get("/", authenticate, auth.testAPI)
 // Public routes
 authRouter.post("/signup", auth.signup)
 authRouter.post("/login", auth.login);
-// authRouter.post("/forgot-password", auth.forgotpassword);
-// authRouter.post("/reset-password", auth.resetPassword);
+authRouter.post("/forgot-password", auth.forgotPassword);
+authRouter.post("/reset-password", auth.resetPassword);
 
 // Protected routes
-authRouter.post("/logout", auth.logout);
+authRouter.post("/logout", authenticate, auth.logout);
 
+export default authRouter;

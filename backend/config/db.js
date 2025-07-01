@@ -17,3 +17,5 @@ export const connectMongoDB = async() => {
         process.exit(1);
     }
 }
+
+export default connectMongoDB;
