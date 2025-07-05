@@ -1,0 +1,17 @@
+
+:root {
+    /* Base Colors*/
+    --color-bg: #0f172a;
+    --color-box: #1E2938;
+    --color-primary-text: #f1f5f9;
+    --color-secondary-text: #94A388;
+    --color-accent: #10B981;
+    --color-hover: #34D400;
+    --color-border: #334a55;
+    
+    /* Fonts */
+    --font-family: 'Inter', 'system-ui', Helvetica, Arial, sans-serif;
+
+
+
+}
