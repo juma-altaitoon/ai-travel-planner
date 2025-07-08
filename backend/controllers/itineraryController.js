@@ -65,7 +65,8 @@ export const generateTest = async (req, res) => {
 // Generate a new itinerary
 export const generateItinerary = async (req, res) => {
     const {
-        destination,
+        country,
+        city,
         startDate,
         endDate,
         duration,
@@ -83,10 +84,11 @@ export const generateItinerary = async (req, res) => {
     - Output must strictly match this structure:
     {
         "friendlyOneLiner": "String
-        "destination": "String",
+        "country": "String",
+        "city": "String"
         "startDate": "YYYY-MM-DD",
         "endDate": "YYYY-MM-DD",
-        "duration": Integer,
+        "duration": Integer, 
         "preferences": ["String1", "String2",...],
         "budget": "low" | "mid" | "high",
         "additionalRequest": "String",

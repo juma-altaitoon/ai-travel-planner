@@ -21,25 +21,43 @@ import { useNavigate } from 'react-router';
 import { Axios } from 'axios';
 
 export default function ForgotPassword () {
-    const [ email, setEmail] = useState("");
+    const [ data, setData] = useState({});
+    const [ errors, setErrors ] = useState({});
     const { forgotPassword, message } = useContext(AuthContext);
     const navigate = useNavigate();
 
+    const validate = () => {
+        let errorMessages = {};
+        // Email Validation
+        if (!data.email){
+            errorMessages.email = "Email is required";
+        } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i.test(data.email)) {
+            errorMessages.email = "Invalid email address";
+        }
+        return errorMessages;
+    }
+
     const handleChange = (event) => {
-        setEmail(event.target.value);
+        const emailData = {...data}
+        emailData[event.target.name] = event.target.value;
+        setData(emailData)
+        const errorMessages = validate();
+        setErrors(errorMessages);
     }
 
     const handleResetRequest = async (event) => {
         event.preventDefault();
-
+        const errorMessages = validate();
+        setErrors(errorMessages);
+        if(Object.keys(errors).length > 0){
+            return ;
+        }
         try {
-            await forgotPassword(email);
+            await forgotPassword(data);
             navigate("/"); 
-                
         } catch (error) {
             console.error(error.message)        
         }
-
     }
 
 
@@ -74,6 +92,8 @@ export default function ForgotPassword () {
                         type='email'
                         autoFocus
                         onChange={handleChange}
+                        error={Boolean(errors.email)}
+                        helperText={errors.email}
                     />
                     <Button
                         type='submit'

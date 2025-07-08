@@ -12,9 +12,11 @@ export default function Signup() {
     const [ newUser, setNewUser ] = useState({});
     const [ showPassword, setShowPassword ] = useState(false);
     const [ showConfirmPassword, setShowConfirmPassword ] = useState(false);
+    const [ errors, setErrors ] = useState({});
     const { signup, message } = useContext(AuthContext);
+
     // Snackbar state
-    const [ openSB, setOpenSB ] = useState(false);
+    // const [ openSB, setOpenSB ] = useState(false);
 
 
     // Password visibility control
@@ -29,18 +31,56 @@ export default function Signup() {
         event.preventDefault();
     }
 
+    // Signup input validation
+    const validate = () => {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i ;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,32}$/ ;
+        let errorMessages = {}
+        if (!newUser.firstName){
+            errorMessages.firstName = "First Name is required";
+        }
+        if (!newUser.lastName){
+            errorMessages.lastName = "Last Name is required";
+        }
+        if (!newUser.username){
+            errorMessages.username = "Username is required";
+        }
+        if (!newUser.email){
+            errorMessages.email = "Email is required";
+        }
+        else if ((!emailRegex.test(newUser.email))) {
+            errorMessages.email = "Invalide email address";
+        }
+        if (!newUser.password) {
+            errorMessages.password = "Password is required";
+        } else if (newUser.password.length < 12 ) {
+            errorMessages.password = "Password must be at least 12 characters";
+        } else if (!passwordRegex.test(newUser.password)) {
+            errorMessages.confirmPassword = "Password should contain at least 1 lowercase, 1 uppercase, 1 number and 1 special character";
+        }
+        if (newUser.password !== newUser.confirmPassword){
+            errorMessages.confirmPassword = "Passwords do not match";
+        } 
+        return errorMessages
+    }
+
     const handleChange = (event) => {
         const user = { ...newUser };
         user[event.target.name] = event.target.value;
         setNewUser(user);
+        
     }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const userData = new FormData();
+        const errorMessages = validate();
+        setErrors(errorMessages);
+        if(Object.keys(errors).length > 0){
+            return ;
+        }
         try {
-            console.log(userData)
-            await signup(userData)
+            console.log(newUser)
+            await signup(newUser)
         } catch (error) {
             console.error( "Signup Error: ", error.message)
         }
@@ -82,6 +122,8 @@ export default function Signup() {
                                 autoComplete='firstName'
                                 autoFocus
                                 onChange={handleChange}
+                                error={Boolean(errors.firstName)}
+                                helperText={errors.firstName}
                             />  
                         </Grid>
                         <Grid size={6}>
@@ -94,6 +136,8 @@ export default function Signup() {
                                 name='lastName'
                                 autoComplete='lastName'
                                 onChange={handleChange}
+                                error={Boolean(errors.lastName)}
+                                helperText={errors.lastName}
                             />  
                         </Grid>
                         <Grid size={6}>
@@ -105,7 +149,9 @@ export default function Signup() {
                                 label='Username'
                                 name='username'
                                 autoComplete='username'
-                                onChange={handleChange}                                
+                                onChange={handleChange}
+                                error={Boolean(errors.username)}
+                                helperText={errors.username}                                
                             />  
                         </Grid>
                         <Grid size={6}>
@@ -119,6 +165,8 @@ export default function Signup() {
                                 type='email'
                                 autoComplete='email'
                                 onChange={handleChange}
+                                error={Boolean(errors.email)}
+                                helperText={errors.email}
                             />  
                         </Grid>
                         <Grid size={12}>
@@ -149,6 +197,8 @@ export default function Signup() {
                                         </InputAdornment>
                                     }
                                 }}
+                                error={Boolean(errors.password)}
+                                helperText={errors.password}
                             />  
                         </Grid>
                         <Grid size={6}>
@@ -174,7 +224,9 @@ export default function Signup() {
                                             </IconButton>
                                         </InputAdornment>
                                     }
-                                }}                              
+                                }}
+                                error={Boolean(errors.confirmPassword)}
+                                helperText={errors.confirmPassword}                              
                             />  
                         </Grid>
                         <Grid size={12}>
@@ -183,7 +235,6 @@ export default function Signup() {
                         <Grid size={6}>
                             <TextField
                                 margin='normal'
-                                required
                                 fullWidth
                                 id='yearOfBirth'
                                 label='Year of Birth'
@@ -197,7 +248,6 @@ export default function Signup() {
                         <Grid size={6}>
                             <TextField
                                 margin='normal'
-                                required
                                 fullWidth
                                 id='country'
                                 label='Country'

@@ -2,12 +2,9 @@ import {
     Container, 
     Typography,
     Box, 
-    Checkbox,
     TextField,
     Button,
     Avatar,
-    FormControlLabel,
-    Link as MuiLink,
     IconButton,
     InputAdornment
 } from '@mui/material';
@@ -17,18 +14,41 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import AuthContext from '../context/AuthContext';
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 export default function PasswordReset () {
     const { passwordReset, message } = useContext(AuthContext);
     const [ showPassword, setShowPassword ] = useState(false);
     const [ showConfirmPassword, setShowConfirmPassword ] = useState(false);
-    const [ resetPassword, setResetPassword ] = useState("");
-    const [ resetToken, setResetToken ] = useState("");  
+    const [ resetData, setResetData ] = useState({});
+    const [ errors, setErrors ] = useState({});
     const navigate = useNavigate();
+    const { resetToken } = useParams();
+
+    const validate = () => {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,32}$/ ;
+        let errorMessages = {};
+
+        if (!resetToken) {
+            errorMessages.resetToken = "Link Invalid"
+        }
+        if (!resetData.password) {
+            errorMessages.password = "Password is required";
+        } else if (resetData.password.length < 12 ) {
+            errorMessages.password = "Password must be at least 12 characters";
+        } else if (!passwordRegex.test(resetData.password)) {
+            errorMessages.password = "Password should contain at least 1 lowercase, 1 uppercase, 1 number and 1 special character";
+        }
+        if (resetData.password !== resetData.confirmPassword){
+            errorMessages.confirmPassword = "Passwords do not match";
+        }
+        return errorMessages;
+    }
 
     const handleChange = (event) => {
-        setResetPassword(event.target.value);
+        const data = { ...resetData };
+        data[event.target.name] = event.target.value;
+        setResetData(data);
     }
 
     // Password Visibility
@@ -45,18 +65,20 @@ export default function PasswordReset () {
 
     const handlePasswordReset = async (event) => {
         event.preventDefault();
-        const data = {
-            resetToken,
-            resetPassword
+        const errorMessages = validate();
+        setErrors(errorMessages);
+        if(Object.keys(errors) > 0) {
+            return ;
         }
         try {
-            await passwordReset(data);
+            resetData["resetToken"] = resetToken
+            await passwordReset(resetData);
+            console.log()
             navigate("/"); 
                 
         } catch (error) {
             console.error(error.message)        
         }
-
     }
 
     return(
@@ -104,6 +126,8 @@ export default function PasswordReset () {
                                 </InputAdornment>
                             }
                         }}
+                        error={Boolean(errors.password)}
+                        helperText={errors.password}
                     />
                     <TextField
                         margin='normal'
@@ -112,6 +136,7 @@ export default function PasswordReset () {
                         id='confirmPassword'
                         label='Confirm Password'
                         name='confirmPassword'
+                        onChange={handleChange}
                         type={showConfirmPassword ? 'text' : 'password'}
                         slotProps={{
                             input: {
@@ -128,6 +153,8 @@ export default function PasswordReset () {
                                 </InputAdornment>
                             }
                         }}
+                        error={Boolean(errors.confirmPassword)}
+                        helperText={errors.confirmPassword}
                     />
                     <Button
                         type='submit'

@@ -19,7 +19,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import AuthContext from '../context/AuthContext.jsx'
 
 
-const pages = ['About', 'Itinerary', 'Contact'];
+const pages = [{name:'About', link: "about"}, {name: 'Itinerary', link: "itinerary"}, {name: 'Contact', link: "#contact"}];
 const settings = ['Profile', 'Collection', 'Logout'];
 
 export default function Header({ mode, setMode}) {
@@ -60,9 +60,9 @@ export default function Header({ mode, setMode}) {
   }
 
   return (
-    <AppBar position="static">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters sx={{ display: 'flex', justifyContent: 'center' }}>
+    <AppBar elevation={0} position="static" >
+      <Container maxWidth="xl" sx={{bgcolor: "transparent", boxShadow: "none"}}>
+        <Toolbar disableGutters sx={{ display: 'flex', justifyContent: 'center', bgcolor:"transparent" }}>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
             variant="h6"
@@ -110,20 +110,20 @@ export default function Header({ mode, setMode}) {
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} component= {Link} to={`/${page.toLowerCase()}`}onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                <MenuItem key={page.name} component= {Link} to={`/${page.link}`}onClick={handleCloseNavMenu}>
+                  <Typography sx={{ textAlign: 'center' }}>{page.name}</Typography>
                 </MenuItem>
               ))}
-              { !isAuthenticated ? (
-                <>                
-                  <MenuItem onClick={handleCloseNavMenu} component={Link} to="/signup">
+              { !isAuthenticated 
+                ? [                
+                  <MenuItem key="signup" onClick={handleCloseNavMenu} component={Link} to="/signup">
                     <Typography sx={{ textAlign: 'center' }}>Signup</Typography>
-                  </MenuItem>
-                  <MenuItem onClick={handleCloseNavMenu} component={Link} to="/login">
+                  </MenuItem>,
+                  <MenuItem key="login" onClick={handleCloseNavMenu} component={Link} to="/login">
                     <Typography sx={{ textAlign: 'center' }}>Login</Typography>
                   </MenuItem>
-                </>
-                )  : null }
+                  ]
+                : null }
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -145,16 +145,16 @@ export default function Header({ mode, setMode}) {
           >
             AI TRAVEL PLANNER
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'space-evenly', alignItems: 'center' }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'space-evenly', alignItems: 'center', bgcolor:"transparent" }}>
             {pages.map((page) => (
               <Button
-                key={page}
+                key={page.name}
                 component= {Link}
-                to={`/${page.toLowerCase()}`}
+                to={`/${page.link}`}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                {page}
+                {page.name}
               </Button>
             ))}
           </Box>
@@ -171,7 +171,8 @@ export default function Header({ mode, setMode}) {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt={user.username} src="/static/images/avatar/2.jpg" />
+                  <Avatar>{user.username}</Avatar>
+                  {/* <Avatar src="/static/images/avatar/2.jpg" /> */}
                 </IconButton>
               </Tooltip>
               <Menu

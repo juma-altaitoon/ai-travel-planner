@@ -12,6 +12,7 @@
     /* Fonts */
     --font-family: 'Inter', 'system-ui', Helvetica, Arial, sans-serif;
 
-
-
+}
+html {
+    scroll-behavior: smooth;
 }

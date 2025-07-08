@@ -3,9 +3,13 @@ import { useNavigate } from 'react-router';
 import Axios from 'axios';
 import propTypes from 'prop-types';
 
+
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+    const backendURL = import.meta.env.VITE_API_URL;
+    
     // Initial Authentication state
     const [ isAuthenticated, setIsAuthenticated ] = useState(false);
     const [ user, setUser ] = useState(null);
@@ -15,9 +19,9 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         // Check if user is Authenticated (if token is valid)
         const checkAuth = async () => {
-            await Axios.get("/user/profile", { withCredentials: true })
+            await Axios.get(backendURL+"/auth/check", { withCredentials: true })
                 .then((response) => {
-                    if (response.data.authenticated) {
+                    if (response.data.user) {
                         setIsAuthenticated(true);
                         setUser(response.data.user);
                     }
@@ -31,7 +35,7 @@ export const AuthProvider = ({ children }) => {
     
     // Signup function
     const signup = async (userData) => {
-        await Axios.post("/auth/signup", userData)
+        await Axios.post(backendURL+"/auth/signup", userData)
             .then((response) => {
                 console.log(response.data);
                 setMessage("Signup Successful.");
@@ -49,7 +53,7 @@ export const AuthProvider = ({ children }) => {
     
     // Login function
     const login = async (userData) => {
-        await Axios.post("/auth/login", userData, { withCredentials: true })
+        await Axios.post(backendURL+"/auth/login", userData, { withCredentials: true })
             .then((response) => {
                 console.log(response.data);
                 setIsAuthenticated(true);
@@ -66,7 +70,7 @@ export const AuthProvider = ({ children }) => {
     
     const logout = async () => {
         
-        await Axios.post("/auth/logout", {}, { withCredentials: true })
+        await Axios.post(backendURL+"/auth/logout", {}, { withCredentials: true })
             .then(() => {
                 setIsAuthenticated(false);
                 setUser(null);
@@ -80,7 +84,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     const forgotPassword = async (email) => {
-        await Axios.post("/auth/forgot-password", email)
+        await Axios.post(backendURL+"/auth/forgot-password", email)
             .then((response) => {
                 console.log("Successful password reset request", response.data);
                 setMessage("Password reset request sent");
@@ -92,7 +96,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     const passwordReset = async ({ token, password }) => {
-        await Axios.post("/auth/password-reset",{ token, password }, {withCredentials: true})
+        await Axios.post(backendURL+"/auth/password-reset",{ token, password }, {withCredentials: true})
             .then((response) => {
                 console.log("Successful password reset", response.data);
                 setMessage("Password reset successful");

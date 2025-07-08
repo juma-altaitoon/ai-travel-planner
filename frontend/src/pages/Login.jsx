@@ -22,8 +22,28 @@ import { useNavigate } from 'react-router';
 export default function Login () {
     const [ userLogin, setUserLogin ] = useState({})
     const {login, message } = useContext(AuthContext);
-    const [ showPassword, setShowPassword ] = useState(false); 
+    const [ showPassword, setShowPassword ] = useState(false);
+    const [ errors, setErrors ] = useState({})
     const navigate = useNavigate();
+
+
+    const validate = () => {
+        let errorMessages = {};
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i
+        // Email Validation
+        if (!userLogin.email){
+            errorMessages.email = "Email is required";
+        } else if (!emailRegex.test(userLogin.email)) {
+            errorMessages.email = "Invalid email address";
+        }
+        // Password validation
+        if (!userLogin.password) {
+            errorMessages.password = "Password is required";
+        } else if (userLogin.password.length < 12 ) {
+            errorMessages.password = "Password must be at least 12 characters";
+        }
+        return errorMessages
+    }
 
     const handleChange = (event) => {
         const user = { ...userLogin };
@@ -33,12 +53,19 @@ export default function Login () {
 
     const handleLogin = async (event) => {
         event.preventDefault();
+        const errorMessages = validate();
+        setErrors(errorMessages)
         try {
+            // if (Object.keys(errors).length > 0) {
+            //     return ;
+            // }
+            console.log(userLogin);
             await login(userLogin);
             console.log(message);
             navigate("/")
         } catch (error) {
             console.error(error.message);
+            setErrors({ form: "Login failed. Please check your credentials."});
         }
     }
 
@@ -82,6 +109,8 @@ export default function Login () {
                         autoComplete='email'
                         autoFocus
                         onChange={handleChange}
+                        error={Boolean(errors.email)}
+                        helperText={errors.email}
                     />
                     <TextField
                         margin='normal'
@@ -108,8 +137,14 @@ export default function Login () {
                                 </InputAdornment>
                             }
                         }}
-
+                        error={Boolean(errors.password)}
+                        helperText={errors.password}
                     />
+                    {errors.form && (
+                        <Typography color="error" sx={{ mt: 1}}>
+                            {errors.form}
+                        </Typography>
+                    )}
                     <FormControlLabel
                         control={<Checkbox value='remember' color='secondary' />} 
                         label='Remember me'

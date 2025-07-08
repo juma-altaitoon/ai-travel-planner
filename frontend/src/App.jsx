@@ -36,7 +36,7 @@ export default function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword/>}/>
-          <Route path="/reset" element={<PasswordReset />} />
+          <Route path="/reset/:reserToken" element={<PasswordReset />} />
 
           <Route path="/404" element={<NotFound />} />
           <Route path='/*' element={<Navigate to="/404"/> } />

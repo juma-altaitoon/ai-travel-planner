@@ -2,11 +2,19 @@ import User from '../models/User.js';
 import crypto from 'crypto';
 
 // Test API
-export const testAPI = (req, res) => {
+export const checkAuth = async (req, res) => {
+    // console.log(req.user);
+    const userId = req.user;
     if (!req.user){
         return res.status(401).json({ message: "Unauthorized access."})
     }
-    return res.status(200).json({ message: "API is working.", user: req.user});
+    try {
+        const user = await User.findById(userId).select(["_id", "username"]);
+        return res.status(200).json({ message: "API is working.", user});
+    } catch (error) {
+        return res.status(401).json({ message: "Unauthorized access.", error: error.message});
+    }
+    
 }
 
 // Signup 
@@ -93,6 +101,7 @@ export const logout = async (req, res) => {
 
 // Forgot Password
 export const forgotPassword = async (req, res) => {
+    console.log(req.body)
     const { email } = req.body;
     // console.log(email);
     const user = await User.findOne({ email });
@@ -147,4 +156,4 @@ export const resetPassword = async (req, res) => {
 }
 
 // Exporting the functions
-export default { signup, login, logout, forgotPassword, resetPassword, testAPI };
+export default { signup, login, logout, forgotPassword, resetPassword, checkAuth };

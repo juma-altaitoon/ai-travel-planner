@@ -6,7 +6,7 @@ const authRouter = express.Router();
 
 // Connecting routes to endpoints
 // Test route
-authRouter.get("/", authenticate, auth.testAPI)
+authRouter.get("/check", authenticate, auth.checkAuth)
 // Public routes
 authRouter.post("/signup", auth.signup)
 authRouter.post("/login", auth.login);
