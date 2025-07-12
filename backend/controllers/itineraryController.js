@@ -92,7 +92,7 @@ export const generateItinerary = async (req, res) => {
         "preferences": ["String1", "String2",...],
         "budget": "low" | "mid" | "high",
         "additionalRequest": "String",
-        "itinerary": [
+        "itineraryDays": [
             {
                 "day": Integer,
                 "date": "YYYY-MM-DD",
@@ -132,7 +132,8 @@ export const generateItinerary = async (req, res) => {
     `.trim()
     
     const userMessage = `
-    Destination : ${destination},
+    Country : ${country},
+    City: ${city}
     Start Date : ${startDate},
     End Date : ${endDate},
     Duration : ${duration} days,
@@ -151,7 +152,7 @@ export const generateItinerary = async (req, res) => {
             model: process.env.OPENAI_MODEL
         })
         if (response?.choices[0]?.message?.content) {
-            const itinerary = JSON.parse(response.choices.message.content);
+            const itinerary = JSON.parse(response.choices[0].message.content);
             itinerary.user = req.user;
             return res.status(200).json({ message: "Itinerary generated successfully", itinerary });
         }

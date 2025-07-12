@@ -19,7 +19,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import AuthContext from '../context/AuthContext.jsx'
 
 
-const pages = [{name:'About', link: "about"}, {name: 'Itinerary', link: "itinerary"}, {name: 'Contact', link: "#contact"}];
+const pages = [{name:'About', link: "about"}, {name: 'Itinerary', link: "itinerary/form"}, {name: 'Contact', link: "#contact"}];
 const settings = ['Profile', 'Collection', 'Logout'];
 
 export default function Header({ mode, setMode}) {
@@ -60,10 +60,10 @@ export default function Header({ mode, setMode}) {
   }
 
   return (
-    <AppBar elevation={0} position="static" >
+    <AppBar elevation={5} position="static" color="transparent" enableColorOnDark >
       <Container maxWidth="xl" sx={{bgcolor: "transparent", boxShadow: "none"}}>
         <Toolbar disableGutters sx={{ display: 'flex', justifyContent: 'center', bgcolor:"transparent" }}>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, color: "text.primary" }} />
           <Typography
             variant="h6"
             noWrap
@@ -75,7 +75,7 @@ export default function Header({ mode, setMode}) {
               fontFamily: 'monospace',
               fontWeight: 700,
               letterSpacing: '.3rem',
-              color: 'inherit',
+              color: 'text.primary',
               textDecoration: 'none',
             }}
           >
@@ -89,7 +89,7 @@ export default function Header({ mode, setMode}) {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color="inherit"
+              color="text.primary"
             >
               <MenuIcon />
             </IconButton>
@@ -128,7 +128,7 @@ export default function Header({ mode, setMode}) {
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
-            variant="h5"
+            variant="h6"
             noWrap
             component={Link}
             to={"/"}
@@ -137,9 +137,9 @@ export default function Header({ mode, setMode}) {
               display: { xs: 'flex', md: 'none' },
               flexGrow: 1,
               fontFamily: 'monospace',
-              fontWeight: 700,
+              fontWeight: "bold",
               letterSpacing: '.2rem',
-              color: 'inherit',
+              color: 'text.primary',
               textDecoration: 'none',
             }}
           >
@@ -152,7 +152,7 @@ export default function Header({ mode, setMode}) {
                 component= {Link}
                 to={`/${page.link}`}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                sx={{ my: 2, color: 'text.primary', display: 'block' }}
               >
                 {page.name}
               </Button>
@@ -160,10 +160,10 @@ export default function Header({ mode, setMode}) {
           </Box>
           { !isAuthenticated ?
             <Box sx={{ flexGrow: 0, display: {  xs: 'none', md: 'flex' }, gap: 1 }}>
-              <Button component={NavLink} color='inherit' to="/signup" sx={{ textTransform: 'uppercase' }}>
+              <Button component={NavLink} to="/signup" sx={{ textTransform: 'uppercase', fontWeight:"bold" }}>
                   Signup
               </Button>
-              <Button component={NavLink} color='inherit' to="/login" sx={{ textTransform: 'uppercase' }}>
+              <Button component={NavLink} to="/login" sx={{ textTransform: 'uppercase', fontWeight:"bold" }}>
                   Login
               </Button>
             </Box>
@@ -203,10 +203,11 @@ export default function Header({ mode, setMode}) {
             <IconButton 
                 sx={{ ml: 1 }}
                 onClick={() => setMode(mode === 'light' ? 'dark' : 'light' )}
-                color='inherit'
             >
-                {mode === 'dark' ? <DarkModeIcon/> : <LightModeIcon />}
-
+                {mode === 'dark' 
+                  ? <LightModeIcon color="warning" />
+                  : <DarkModeIcon color="action"/> 
+                }
             </IconButton>
 
           </Box>
