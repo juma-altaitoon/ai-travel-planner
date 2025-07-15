@@ -14,8 +14,10 @@ import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import { Box } from '@mui/material';
 import ForgotPassword from './pages/ForgootPassword.jsx';
-import ItineraryForm from './components/ItinerarySearch.jsx';
+import ItineraryForm from './components/itineraryForm/ItinerarySearch.jsx';
 import GeneratedItinerary from './components/GeneratedItinerary.jsx';
+import Itineraries from './pages/Itineraries.jsx';
+import ItineraryDetails from './pages/ItineraryDetails.jsx';
 
 
 export default function App() {
@@ -40,8 +42,11 @@ export default function App() {
           <Route path="/forgot-password" element={<ForgotPassword/>}/>
           <Route path="/reset/:reserToken" element={<PasswordReset />} />
 
+          <Route path='/Itinerary' element={<Itineraries/>}/>
+          <Route path='/Itinerary/:id' element={<ItineraryDetails/>}/>
           <Route path='/Itinerary/form' element={<ItineraryForm/>}/>
           <Route path='/Itinerary/generated' element={<GeneratedItinerary/>}/>
+
 
           <Route path="/404" element={<NotFound />} />
           <Route path='/*' element={<Navigate to="/404"/> } />

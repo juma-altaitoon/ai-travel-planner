@@ -5,8 +5,8 @@ import { Box, Button, TextField, Typography, Grid, Paper, Stack} from '@mui/mate
 export default function Contact() {
 
     return (
-        <Box id="contact" sx={{ p:4, bgcolor: "background.paper", color:"text.primary", height: "80vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Paper elevation={3} sx={{ p:4, maxWidth: 500, width: "100%" }}>    
+        <Box id="contact" sx={{ p:4, bgcolor: "background.paper", color:"text.primary", height: "80vh", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "20px" }}>
+            <Paper elevation={3} sx={{ p:4, maxWidth: 500, width: "100%", borderRadius: "20px", boxShadow: `0 10px 50px 5px green` }}>    
                 <Box sx={{  display:'flex', gap:2, alignItems: "center", justifyContent: "center", mb: 3 }}>
                     <SupportAgentIcon fontSize="large" color="primary" />
                     <Typography variant='h5' fontWeight={500}>Contact Us</Typography>

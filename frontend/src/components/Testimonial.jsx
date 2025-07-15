@@ -16,8 +16,8 @@ export default function Testimonials(){
             </Typography>
             <Grid container spacing={0} justifyContent={"center"} >
                 {testimonialList.map((testimonial, i) => (
-                    <Grid size={{xs:12, md:4}} key={i}>
-                        <Box  sx={{ justifyContent: "center", textAlign: "center", bgcolor: "primary.main", m:2, p:4, borderRadius: "10px", border: 2 }}>
+                    <Grid size={{xs:12, md:4}} key={i} >
+                        <Box  sx={{ justifyContent: "center", textAlign: "center", bgcolor: "primary.main", m:2, p:4, borderRadius: "10px", "&:hover": { border: "2px solid", borderColor: "secondary.dark", bgcolor: "GrayText" } }}>
                             <Avatar sx={{ mx: "auto", mb: 2, color:"text.secondary", bgcolor:"background.paper", fontStyle:"bold" }}>
                                 {testimonial.name[0]}
                             </Avatar>

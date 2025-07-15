@@ -78,7 +78,7 @@ export default function DailyActivities({ dayActivities }) {
                     ))}
                 </Stack>
                 {dayActivities.notes && (
-                    <Alert severity="info" sx={{ m:1, borderRadius: 5 }}>
+                    <Alert variant="standard"  severity="info" sx={{ m:1, borderRadius: 5 }}>
                         {dayActivities.notes}
                     </Alert>
                 )}

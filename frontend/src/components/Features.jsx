@@ -28,8 +28,8 @@ export default function Features() {
     return (
         <Box sx={{ p: 10, bgcolor: "background.paper", minHeight: "100vh" }}>
             <Grid container spacing={4} sx={{ p: 1, justifyContent:"center", alignItems: "center"}}>
-                <Grid  size={{ xs: 12 }} sx={{display: "flex", justifyContent: "space-evenly", alignItems: "center", color: "secondary.light", bgcolor: "primary.dark", py: 4}}>
-                    <PanoramaIcon fontSize='large' bgcolor="primary.light"/>
+                <Grid  size={{ xs: 12 }} sx={{display: "flex", justifyContent: "space-evenly", alignItems: "center", color: "secondary.light", bgcolor: "primary.dark", py: 4, border: "2px solid", borderRadius: "10%", borderColor: "secondary.dark"}}>
+                    <PanoramaIcon fontSize='large'/>
                     <LuggageIcon fontSize='large'/>
                     <MuseumIcon fontSize='large'/>
                     <DownhillSkiingIcon fontSize='large'/>
@@ -38,7 +38,7 @@ export default function Features() {
                 </Grid>
                 { featuresList.map((feature, i) => (
                     <Grid size={{xs: 12, md: 4}} key={i}>
-                        <Paper elevation={3} sx={{ p:3, height: "100%", borderRadius: "10px" }}>
+                        <Paper elevation={3} sx={{ p:1, height: "100%", borderRadius: "10px", border: "2px solid", borderColor: "primary.main", "&:hover": { bgcolor: "GrayText", borderColor: "primary.light" }}}>
                             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", my: 2 }}>
                                 {feature.icon}
                                 <Typography variant="h6" color="secondary" sx={{ mt: 2 }}>

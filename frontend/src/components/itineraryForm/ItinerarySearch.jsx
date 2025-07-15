@@ -3,7 +3,9 @@ import{ Container, Paper, Stack, Box, Grid, TextField, FormControl, InputLabel, 
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import CountrySelect from './CountrySelect';
-import { TabPanel, a11yProps } from './TabPanel';
+import dayjs from 'dayjs';
+import Axios from 'axios';
+import { useNavigate } from 'react-router';
 
 const preferencesOptions = [
     "Cultural",
@@ -17,8 +19,12 @@ const preferencesOptions = [
 ];
 
 export default function ItineraryForm(){
+    const BACKEND_URL = import.meta.env.VITE_API_URL;
+    const navigate = useNavigate();
+
+    const [ countryObject, setCountryObject ] = useState(null);
     const [ form, setForm ] = useState({
-        country: '',
+        country: null,
         city: '',
         startDate: null,
         endDate: null,
@@ -28,10 +34,27 @@ export default function ItineraryForm(){
         additionalRequest: '',
     })
 
+
     const handleChange = (event) => {
         const data = { ...form };
         data[event.target.name] = event.target.value;
         setForm(data);
+    }
+
+    const handleDateChange = (name, value) => {
+        const data = { ...form};
+        data[name] = dayjs(value).toDate()
+        setForm(data);
+        console.log(form);
+    }
+
+    const handleCountryChange = (name, value) => {
+        setCountryObject(value)
+        const data = { ...form};
+
+        data[name] = value.label;
+        setForm(data);
+        console.log(form);
     }
 
     const handleCheckboxChange = (event, preference) => {
@@ -47,27 +70,41 @@ export default function ItineraryForm(){
         const data = {...form};
         data.preferences = prefs;
         setForm(data);
+        console.log(form)
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmitForm = async (event) => {
         event.preventDefault();
-        
+        console.log(form)
+        await Axios.post(BACKEND_URL+'/itinerary/generate', form, {withCredentials: true})
+            .then((response) => {
+                console.log(response.data)
+                const generatedItinerary = response.data;
+                navigate("/itinerary/generate", { state: { itinerary: generatedItinerary } })
+            })
+            .catch((error) => {
+                console.error("Error generating itinerary: ", error.message)
+            })
     }
  
 
     return (
-        <Container maxWidth='sm' component={Paper} sx={{ display: "flex", justifyContent:"center" }}>
-            <Box maxWidth={600} component="form" onSubmit={handleSubmit} sx={{ p: 4 }} >
+        <Container maxWidth='sm' component={Paper} sx={{ display: "flex", justifyContent:"center", my: 4 }}>
+            <Box maxWidth={600} component="form" onSubmit={handleSubmitForm} sx={{ p: 4 }} >
             {/* Itinerary Form */}
                 <Typography variant='h4' fontWeight="bold" color="secondary.dark" textAlign="center" m={2}>
                     Itinerary Form
                 </Typography>
-                <Divider/>
-                <Grid container spacing={4}>
+                <Divider sx={{ mb: 2 }}/>
+                <Grid container spacing={3}>
                     <Grid size={{xs:12, sm: 12 }} sx={{ mt: 5, mb: 3 }}>
-                        <CountrySelect fullWidth/>
+                        <CountrySelect
+                            fullWidth
+                            value={countryObject}
+                            onChange={(event, newValue) => handleCountryChange('country', newValue) }
+                        />
                     </Grid>
-                    <Grid size={{xs:12, sm: 6 }}>
+                    <Grid size={{xs:12 }}>
                         <TextField
                             fullWidth
                             label="City / Region"
@@ -80,9 +117,9 @@ export default function ItineraryForm(){
                         <DatePicker
                             fullWidth
                             label="Start Date"
-                            name='startDate'
-                            value={form.startDate}
-                            onChange={handleChange}
+                        
+                            onChange={(value) => handleDateChange('startDate', value)}
+                            // renderInput={(params) => <TextField {...params} fullWidth />}
                         />
                         </LocalizationProvider>
                     </Grid>
@@ -91,9 +128,7 @@ export default function ItineraryForm(){
                         <DatePicker
                             fullWidth
                             label="End Date"
-                            name='endDate'
-                            value={form.endDate}
-                            onChange={handleChange}
+                            onChange={(value) => handleDateChange('endDate', value)}
                         />
                         </LocalizationProvider>
                     </Grid>
@@ -104,7 +139,6 @@ export default function ItineraryForm(){
                             name= "duration"
                             value={form.duration}
                             onChange={handleChange}
-                            security=""
                         />
                     </Grid>
                     <Grid size={{xs:12, sm: 6 }}>
@@ -154,7 +188,6 @@ export default function ItineraryForm(){
                         </Button>
                     </Grid>
                 </Grid>
-            
             </Box>
         </Container>
     )

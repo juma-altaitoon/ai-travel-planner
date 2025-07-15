@@ -1,36 +1,38 @@
-import React, { useState } from 'react';
-import { Card, CardHeader, CardContent, CardActions, CardMedia, Divider, Chip, Alert } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Card, CardHeader, CardContent, CardActions, CardMedia, Divider, Chip, CircularProgress } from '@mui/material';
 import { Container, Typography, Button, IconButton, Collapse, AppBar, Tabs, Tab, Box, Grid } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import SaveIcon from '@mui/icons-material/Save';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { TabPanel, a11yProps } from './TabPanel';
 import DailyActivities from './DailyActivities';
 import Axios from 'axios';
-import { useLocation, useNavigate } from 'react-router';
 
 const BACKEND_URL = import.meta.env.VITE_API_URL;
-const saveItinerary = async (itinerary) => {
+
+const getItineraryById = async (id) => {
     try {
-        const response = await Axios.post(BACKEND_URL+"/Itinerary/save", itinerary, { withCredentials: true } );
-        console.log(response.data)
+        const response = await Axios.get(BACKEND_URL+"/itinerary/id", id, {withCredentials: true});
         return response.data;
-    
     } catch (error) {
-      console.error("Error Saving Itinerary: ", error);
-      throw new Error("Error Saving Itinerary.", error);
+        console.error("Error fetching itinerary: ", error);
+        throw error;
     }
 }
 
-export default function GeneratedItinerary() {
-    const { state } = useLocation();
-    const navigate = useNavigate();
+export default function ItineraryDetailsView({ id }) {
     const [ expand, setExpand ] = useState(false);
     const [ tabIndex, setTabIndex ] = useState(0);
     const [ itinerary, setItinerary ] = useState(itinerarySample);
-    
-    setItinerary(state?.itinerary);
+    const [ loading, setLoading ] = useState(true);
+
+    useEffect(() => {
+            getItineraryById(id)
+                .then((data) => {
+                    setItinerary(data)
+                })
+                .catch((error) => console.error(error))
+                .finally(() => setLoading)
+        }, [id])
     
     const handleExpand = () => {
         setExpand(!expand);
@@ -38,20 +40,6 @@ export default function GeneratedItinerary() {
 
     const handleTabChange = (event, newIndex) => {
         setTabIndex(newIndex);
-    }
-
-    const handleDelete = () => {
-        navigate("/itinerary")
-    }
-
-    const handleSave = () => {
-        try {
-            saveItinerary(itinerary);
-            console.log("Successful Save.")
-            navigate("/itinerary")
-        } catch (error) {
-            console.error("Error Saving Itinerary: ", error)
-        }
     }
 
     function formatTabDateLabel(day, date) {
@@ -63,6 +51,9 @@ export default function GeneratedItinerary() {
 
     return(
         <>
+        {loading ?
+            <CircularProgress/>
+        :
             <Container maxWidth="md" sx={{ my: 5 }}>
                 <Card 
                     sx={{ 
@@ -78,15 +69,15 @@ export default function GeneratedItinerary() {
                     }}
                 >
                     <CardHeader 
-                        title={itinerarySample.city + ", " + itinerarySample.country + " - Itinerary"}
-                        subheader={itinerarySample.startDate + " - " + itinerarySample.endDate }    
+                        title={itinerary.city + ", " + itinerary.country + " - Itinerary"}
+                        subheader={itinerary.startDate + " - " + itinerary.endDate }    
                     />
                     <Divider/>
                     <Grid container spacing={1} alignItems="center" justifyContent="center" >
                         <Grid size={{ xs:12, md: 12 }}>
                             <CardContent >
                                 <Typography variant='body1' color="info" fontWeight={'bold'} m={1}>
-                                    {itinerarySample.friendlyOneLiner}
+                                    {itinerary.friendlyOneLiner}
                                 </Typography>
                             </CardContent>
                         </Grid>
@@ -106,7 +97,7 @@ export default function GeneratedItinerary() {
                         <Grid size={{ xs:12, md: 7 }}>
                             <CardContent sx={{ px: 1 }} >
                                 <Typography variant='subtitle1'm={1}>
-                                    {itinerarySample.summary}
+                                    {itinerary.summary}
                                 </Typography> 
                             </CardContent>
                         </Grid>
@@ -115,10 +106,10 @@ export default function GeneratedItinerary() {
                                 <Typography fontWeight="bold" mb={1}>
                                     Preferences: 
                                 </Typography>
-                                {itinerarySample.preferences.map((preference) => (
+                                {itinerary.preferences.map((preference) => (
                                     <Chip key={preference} label={preference} size="small" color='primary'/>
                                 ))}
-                                <Chip label={`Budget: ${itinerarySample.budget}`} size="small" color='secondary' />
+                                <Chip label={`Budget: ${itinerary.budget}`} size="small" color='secondary' />
                             </CardContent>
                         </Grid>
                         <Grid size={{ xs:12, md: 7 }}>    
@@ -127,26 +118,18 @@ export default function GeneratedItinerary() {
                                     Additional Request
                                 </Typography>
                                 <Typography variant="subtitle2" color='secondary'>
-                                    {itinerarySample.additionalRequest}
+                                    {itinerary.additionalRequest}
                                 </Typography>   
                             </CardContent> 
                         </Grid>                     
                     </Grid>
-                    <CardActions sx={{ m:1, justifyContent: "space-between"}} >
-                        <Button variant='contained' onClick={handleSave}>
-                            <SaveIcon/>
-                            {/* Save */}
-                        </Button>
-                        <Button variant="outlined" aria-label='expand itinerary' onClick={handleExpand} aria-expanded={expand} color='info'>
+                    <CardActions >
+                        <Button aria-label='expand itinerary' onClick={handleExpand} aria-expanded={expand}>
                             Daily Schedule 
                             { expand 
                                 ? <ExpandLessIcon/>
                                 :<ExpandMoreIcon/> 
                             }
-                        </Button>
-                        <Button variant='contained' color='error' onClick={handleDelete(itinerarySample.index)}>
-                            <DeleteIcon />
-                            {/* Delete */}
                         </Button>
                     </CardActions>
                 </Card>
@@ -163,13 +146,13 @@ export default function GeneratedItinerary() {
                                 allowScrollButtonsMobile
                                 scrollButtons
                             >   
-                                {itinerarySample.itineraryDays.map((data, idx) => (
+                                {itinerary.itineraryDays.map((data, idx) => (
                                     <Tab label={formatTabDateLabel(data.day, data.date)} {...a11yProps(idx)} key={data.day} />
                                 ))} 
                             </Tabs>
                         </AppBar>
                     </Card>
-                    {itinerarySample.itineraryDays.map((data, idx) => (
+                    {itinerary.itineraryDays.map((data, idx) => (
                         <TabPanel value={tabIndex} index={idx} key={data.day}>
                             <DailyActivities dayActivities={data}/>
                         </TabPanel>
@@ -177,6 +160,7 @@ export default function GeneratedItinerary() {
                 </Collapse> 
                 
             </Container>
+        }
         </>
     )
 }
