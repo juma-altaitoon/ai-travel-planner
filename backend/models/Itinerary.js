@@ -86,6 +86,14 @@ const itinerarySchema = new mongoose.Schema({
     summary: {
         type: String,
         default: '',
+    },
+    budget: {
+        type: String,
+        enum: [ 'low', 'mid', 'high' ],
+    },
+    friendlyOneLiner: {
+        type: String,
+        default: ''
     }
 }, { timestamps: true });
 

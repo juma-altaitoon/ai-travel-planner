@@ -18,6 +18,7 @@ import ItineraryForm from './components/itineraryForm/ItinerarySearch.jsx';
 import GeneratedItinerary from './components/GeneratedItinerary.jsx';
 import Itineraries from './pages/Itineraries.jsx';
 import ItineraryDetails from './pages/ItineraryDetails.jsx';
+import ProtectedRoute from './context/ProtectedRoute.jsx';
 
 
 export default function App() {
@@ -46,6 +47,11 @@ export default function App() {
           <Route path='/Itinerary/:id' element={<ItineraryDetails/>}/>
           <Route path='/Itinerary/form' element={<ItineraryForm/>}/>
           <Route path='/Itinerary/generated' element={<GeneratedItinerary/>}/>
+
+          {/* <Route path='/Itinerary' element={<ProtectedRoute><Itineraries/></ProtectedRoute>}/>
+          <Route path='/Itinerary/:id' element={<ProtectedRoute><ItineraryDetails/></ProtectedRoute>}/>
+          <Route path='/Itinerary/form' element={<ProtectedRoute><ItineraryForm/></ProtectedRoute>}/>
+          <Route path='/Itinerary/generated' element={<ProtectedRoute><GeneratedItinerary/></ProtectedRoute>}/> */}
 
 
           <Route path="/404" element={<NotFound />} />

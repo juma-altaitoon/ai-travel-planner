@@ -12,14 +12,17 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import { Link, NavLink, useNavigate } from 'react-router';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import AuthContext from '../context/AuthContext.jsx'
+import { Chip } from '@mui/material';
+import FaceIcon from '@mui/icons-material/Face'
 
 
-const pages = [{name:'About', link: "about"}, {name: 'Itinerary', link: "itinerary/form"}, {name: 'Contact', link: "#contact"}];
+
+const normalPages = [{name:'About', link: "about"}, {name: 'Contact', link: "#contact"}];
+const authPages = [{name:'About', link: "about"}, {name: 'Itinerary', link: "itinerary"},{name: "Generate", link: "itinerary/form"}, {name: 'Contact', link: "#contact"}]
 const settings = ['Profile', 'Collection', 'Logout'];
 
 export default function Header({ mode, setMode}) {
@@ -30,7 +33,7 @@ export default function Header({ mode, setMode}) {
   
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-
+  const pages = (isAuthenticated ? authPages : normalPages)
 
 
   const handleOpenNavMenu = (event) => {
@@ -63,7 +66,7 @@ export default function Header({ mode, setMode}) {
     <AppBar elevation={5} position="static" color="transparent" enableColorOnDark >
       <Container maxWidth="xl" sx={{bgcolor: "transparent", boxShadow: "none"}}>
         <Toolbar disableGutters sx={{ display: 'flex', justifyContent: 'center', bgcolor:"transparent" }}>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, color: "text.primary" }} />
+          <Avatar src={"branding_Icon.png"}  sx={{ display: {xs: 'none', md:"flex"}, m:2, height:40, width:40}}/>
           <Typography
             variant="h6"
             noWrap
@@ -126,7 +129,7 @@ export default function Header({ mode, setMode}) {
                 : null }
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+          <Avatar src={"branding_Icon.png"}  sx={{ display: {xs: 'flex', md:"none"}, m:2, height:40, width:40}}/>
           <Typography
             variant="h6"
             noWrap
@@ -170,9 +173,8 @@ export default function Header({ mode, setMode}) {
             :
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar>{user.username}</Avatar>
-                  {/* <Avatar src="/static/images/avatar/2.jpg" /> */}
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, boxShadow: "0 0 5px 0" }}>
+                  <Chip label={user.username} color='primary' sx={{ fontWeight: "bold" }}/>
                 </IconButton>
               </Tooltip>
               <Menu

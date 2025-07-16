@@ -11,28 +11,39 @@ const BACKEND_URL = import.meta.env.VITE_API_URL;
 
 const getItineraryById = async (id) => {
     try {
-        const response = await Axios.get(BACKEND_URL+"/itinerary/id", id, {withCredentials: true});
-        return response.data;
+        const response = await Axios.post(BACKEND_URL+"/itinerary/id", { id }, { withCredentials: true });
+        console.log(response.data)
+        return response.data.itinerary;
     } catch (error) {
         console.error("Error fetching itinerary: ", error);
-        throw error;
+        
     }
 }
 
-export default function ItineraryDetailsView({ id }) {
+export default function ItineraryDetailsView({ tripId }) {
     const [ expand, setExpand ] = useState(false);
     const [ tabIndex, setTabIndex ] = useState(0);
-    const [ itinerary, setItinerary ] = useState(itinerarySample);
+    const [ itinerary, setItinerary ] = useState( null);
     const [ loading, setLoading ] = useState(true);
 
     useEffect(() => {
-            getItineraryById(id)
-                .then((data) => {
-                    setItinerary(data)
-                })
-                .catch((error) => console.error(error))
-                .finally(() => setLoading)
-        }, [id])
+        if (!tripId) return;
+        let cancelled = false;
+
+        console.log(tripId)
+        getItineraryById(tripId)
+            .then((data) => {
+                if(!cancelled) {
+                    setItinerary(data); 
+                }
+            })
+            .catch((error) => console.error(error))
+            .finally(() => !cancelled && setLoading(false))
+        
+        return () => {
+            cancelled = true;
+        }
+    }, [tripId])
     
     const handleExpand = () => {
         setExpand(!expand);
@@ -42,6 +53,13 @@ export default function ItineraryDetailsView({ id }) {
         setTabIndex(newIndex);
     }
 
+    function formatHeaderDate(date){
+      return new Date(date).toLocaleDateString(
+        'en-US', 
+        { month: "short", day:"2-digit", year: "numeric" }
+      );
+    }
+    
     function formatTabDateLabel(day, date) {
         const dateObject = new Date(date);
         const weekday = dateObject.toLocaleDateString('en-US', {weekday: "short"}).toUpperCase();
@@ -49,11 +67,25 @@ export default function ItineraryDetailsView({ id }) {
         return `Day ${day} - ${weekday} ${dayAndMonth}`;
     }
 
+
+    if (loading) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: "center", mt:8 }}>
+                <CircularProgress/>
+            </Box>
+        )
+    }
+
+    if (!itinerary) {
+        return (
+            <Typography variant='h6' align="center" sx={{ mt: 8 }} >
+                No Itinerary Found
+            </Typography>
+        )
+    }
+
     return(
         <>
-        {loading ?
-            <CircularProgress/>
-        :
             <Container maxWidth="md" sx={{ my: 5 }}>
                 <Card 
                     sx={{ 
@@ -70,7 +102,7 @@ export default function ItineraryDetailsView({ id }) {
                 >
                     <CardHeader 
                         title={itinerary.city + ", " + itinerary.country + " - Itinerary"}
-                        subheader={itinerary.startDate + " - " + itinerary.endDate }    
+                        subheader={formatHeaderDate(itinerary.startDate) + " - " + formatHeaderDate(itinerary.endDate) }    
                     />
                     <Divider/>
                     <Grid container spacing={1} alignItems="center" justifyContent="center" >
@@ -158,195 +190,193 @@ export default function ItineraryDetailsView({ id }) {
                         </TabPanel>
                     ))}     
                 </Collapse> 
-                
             </Container>
-        }
         </>
     )
 }
 
-const itinerarySample = {
-    "friendlyOneLiner": "Experience Kyoto's enchanting temples, scenic beauty, and flavorful vegetarian cuisine in 5 immersive days.",
-    "country": "Japan",
-    "city": "Kyoto",
-    "startDate": "2025-08-01",
-    "endDate": "2025-08-05",
-    "duration": 5,
-    "preferences": [
-        "Cultural",
-        "Foodie",
-        "Nature"
-    ],
-    "budget": "mid",
-    "additionalRequest": "Include hidden temples, scenic routes, and vegetarian food spots.",
-    "itineraryDays": [
-        {
-            "day": 1,
-            "date": "2025-08-01",
-            "morning": {
-                "activity": "Explore the Philosopher's Path",
-                "location": "Philosopher's Path",
-                "description": "Stroll along the charming canal-line path surrounded by nature, connecting hidden temples in Northern Higashiyama.",
-                "link": "https://www.japan-guide.com/e/e3906.html",
-                "youtubeLink": "https://www.youtube.com/watch?v=VsuSNTIpyyY",
-                "cost": 0
-            },
-            "afternoon": {
-                "activity": "Vegetarian Lunch and Visit Honen-in Temple",
-                "location": "Honen-in Temple and Veggie Cafe",
-                "description": "Dine at Choice Cafe (vegan/vegetarian) near Ginkaku-ji, then walk to the secluded Honen-in Temple nearby.",
-                "link": "https://www.kyotostation.com/choice-vegan-cafe-restaurant/",
-                "youtubeLink": "https://www.youtube.com/watch?v=-8Rcmdhq7wc",
-                "cost": 25
-            },
-            "evening": {
-                "activity": "Twilight Visit to Nanzen-ji Temple",
-                "location": "Nanzen-ji Temple",
-                "description": "Wander Nanzen-ji’s serene grounds, less crowded at dusk—enjoy forested paths and iconic aqueduct.",
-                "link": "https://www.japan-guide.com/e/e3908.html",
-                "youtubeLink": "https://www.youtube.com/watch?v=MNvDKfJbjmo",
-                "cost": 5
-            },
-            "transport": [
-                "Walk",
-                "Bus"
-            ],
-            "notes": "Wear comfortable walking shoes; both Philosopher's Path and Nanzen-ji are scenic and shaded."
-        },
-        {
-            "day": 2,
-            "date": "2025-08-02",
-            "morning": {
-                "activity": "Early Morning at Fushimi Inari Taisha",
-                "location": "Fushimi Inari Taisha",
-                "description": "Beat the crowds at the iconic thousand torii gates and continue up the scenic mountain trails.",
-                "link": "https://www.japan-guide.com/e/e3915.html",
-                "youtubeLink": "https://www.youtube.com/watch?v=Hzc4rDAn4aY",
-                "cost": 0
-            },
-            "afternoon": {
-                "activity": "Vegetarian Udon Lunch & Tofuku-ji Temple",
-                "location": "Tofuku-ji Temple and Ganko Nijoen (Veg options)",
-                "description": "Savor handmade udon at a local spot before heading to Tofuku-ji, a hidden zen gem with lush gardens.",
-                "link": "https://tofukuji.jp/en/",
-                "youtubeLink": "https://www.youtube.com/watch?v=UnR5V3-XOI4",
-                "cost": 18
-            },
-            "evening": {
-                "activity": "Stroll through Gion’s Old Streets",
-                "location": "Gion District",
-                "description": "Evening wander in historic Gion, with traditional wooden machiya and possible brief geisha sightings.",
-                "link": "https://www.japan-guide.com/e/e3902.html",
-                "youtubeLink": "https://www.youtube.com/watch?v=G7zW4kQN_8c",
-                "cost": 0
-            },
-            "transport": [
-                "Train",
-                "Walk"
-            ],
-            "notes": "Start early at Fushimi Inari; many steps involved. Evening in Gion—dress light for summer."
-        },
-        {
-            "day": 3,
-            "date": "2025-08-03",
-            "morning": {
-                "activity": "Arashiyama Bamboo Grove & Okochi Sanso Villa",
-                "location": "Arashiyama",
-                "description": "Walk the magical bamboo groves and tour Okochi Sanso Villa for breathtaking mountain views.",
-                "link": "https://www.japan-guide.com/e/e3912.html",
-                "youtubeLink": "https://www.youtube.com/watch?v=rQ0zhs1v8g0",
-                "cost": 10
-            },
-            "afternoon": {
-                "activity": "Shigetsu Zen Vegetarian Lunch & Tenryu-ji Temple",
-                "location": "Shigetsu Restaurant (Tenryu-ji Temple Grounds)",
-                "description": "Try shojin ryori (Buddhist vegetarian cuisine) inside the exquisite garden setting of Tenryu-ji.",
-                "link": "https://www.tenryuji.com/en/shigetsu/",
-                "youtubeLink": "https://www.youtube.com/watch?v=pIG5WxR5tTw",
-                "cost": 35
-            },
-            "evening": {
-                "activity": "Boat Ride on Hozugawa River",
-                "location": "Hozugawa River, Arashiyama",
-                "description": "Relax with an evening boat ride on the river, surrounded by forested hills and cooling breezes.",
-                "link": "https://www.hozugawakudari.jp/en/",
-                "youtubeLink": "https://www.youtube.com/watch?v=qv23Dv_rhZQ",
-                "cost": 45
-            },
-            "transport": [
-                "Train",
-                "Walk",
-                "Boat"
-            ],
-            "notes": "Cooler in Arashiyama due to shade; bring hat and water. Reserve riverside boat in advance."
-        },
-        {
-            "day": 4,
-            "date": "2025-08-04",
-            "morning": {
-                "activity": "Kurama Temple and Mountain Hike",
-                "location": "Kurama-dera",
-                "description": "Escape the city on a wooded hike, discovering the hidden mountain temple of Kurama-dera.",
-                "link": "https://www.insidekyoto.com/kurama-and-kibune",
-                "youtubeLink": "https://www.youtube.com/watch?v=3iofa5IygK4",
-                "cost": 3
-            },
-            "afternoon": {
-                "activity": "Lunch by the River in Kibune (Vegetarian Kaiseki)",
-                "location": "Kibune Kawadoko Restaurants",
-                "description": "Enjoy a cool, multi-course vegetarian meal at a riverside platform restaurant in Kibune.",
-                "link": "https://www.japan-guide.com/e/e3966.html",
-                "youtubeLink": "https://www.youtube.com/watch?v=CD44s_S4TJ0",
-                "cost": 40
-            },
-            "evening": {
-                "activity": "Soak in Kurama Onsen",
-                "location": "Kurama Onsen",
-                "description": "Unwind in a rural hot spring bath overlooking forested mountains (private/family baths available).",
-                "link": "https://www.kurama-onsen.co.jp/english.html",
-                "youtubeLink": "https://www.youtube.com/watch?v=OHOku11I8Bw",
-                "cost": 18
-            },
-            "transport": [
-                "Eizan Railway",
-                "Walk"
-            ],
-            "notes": "Bring hiking gear and a towel for onsen. Reserve kawadoko lunch if possible (limited summer seating)."
-        },
-        {
-            "day": 5,
-            "date": "2025-08-05",
-            "morning": {
-                "activity": "Explore Daigo-ji Temple Complex",
-                "location": "Daigo-ji Temple",
-                "description": "Discover the vast UNESCO temple grounds, hidden pagodas, and serene pond gardens far from city crowds.",
-                "link": "https://www.daigoji.or.jp/english/",
-                "youtubeLink": "https://www.youtube.com/watch?v=nq18ju6NAH4",
-                "cost": 8
-            },
-            "afternoon": {
-                "activity": "Vegetarian Bento Lunch & Uji Byodo-in Visit",
-                "location": "Uji (Byodo-in Temple and veggie café)",
-                "description": "Catch a train to Uji, taste matcha treats and vegetarian bento, then see the Phoenix Hall temple.",
-                "link": "https://www.japan-guide.com/e/e3975.html",
-                "youtubeLink": "https://www.youtube.com/watch?v=6-ju2ktbFsM",
-                "cost": 20
-            },
-            "evening": {
-                "activity": "Return to Kyoto and Farewell Dinner",
-                "location": "Vegans Cafe & Restaurant, Kyoto",
-                "description": "Wrap up with a delicious plant-based dinner at a local-favorite spot with creative Japanese cuisine.",
-                "link": "https://veganscafe.com/",
-                "youtubeLink": "https://www.youtube.com/watch?v=kT0T9ssPDRc",
-                "cost": 25
-            },
-            "transport": [
-                "Train",
-                "Walk"
-            ],
-            "notes": "Uji can be very hot in August—bring sunblock. Savour final Kyoto moments with matcha and food."
-        }
-    ],
-    "summary": "This mid-budget itinerary blends Kyoto’s cultural gems and tranquil nature escapes with unique hidden temples, scenic walks, and standout vegetarian meals every day, ensuring a balanced local experience from city pathways to rural mountain retreats.",
-    "user": "68617be21337057828169caa"
-}
+// const itinerarySample = {
+//     "friendlyOneLiner": "Experience Kyoto's enchanting temples, scenic beauty, and flavorful vegetarian cuisine in 5 immersive days.",
+//     "country": "Japan",
+//     "city": "Kyoto",
+//     "startDate": "2025-08-01",
+//     "endDate": "2025-08-05",
+//     "duration": 5,
+//     "preferences": [
+//         "Cultural",
+//         "Foodie",
+//         "Nature"
+//     ],
+//     "budget": "mid",
+//     "additionalRequest": "Include hidden temples, scenic routes, and vegetarian food spots.",
+//     "itineraryDays": [
+//         {
+//             "day": 1,
+//             "date": "2025-08-01",
+//             "morning": {
+//                 "activity": "Explore the Philosopher's Path",
+//                 "location": "Philosopher's Path",
+//                 "description": "Stroll along the charming canal-line path surrounded by nature, connecting hidden temples in Northern Higashiyama.",
+//                 "link": "https://www.japan-guide.com/e/e3906.html",
+//                 "youtubeLink": "https://www.youtube.com/watch?v=VsuSNTIpyyY",
+//                 "cost": 0
+//             },
+//             "afternoon": {
+//                 "activity": "Vegetarian Lunch and Visit Honen-in Temple",
+//                 "location": "Honen-in Temple and Veggie Cafe",
+//                 "description": "Dine at Choice Cafe (vegan/vegetarian) near Ginkaku-ji, then walk to the secluded Honen-in Temple nearby.",
+//                 "link": "https://www.kyotostation.com/choice-vegan-cafe-restaurant/",
+//                 "youtubeLink": "https://www.youtube.com/watch?v=-8Rcmdhq7wc",
+//                 "cost": 25
+//             },
+//             "evening": {
+//                 "activity": "Twilight Visit to Nanzen-ji Temple",
+//                 "location": "Nanzen-ji Temple",
+//                 "description": "Wander Nanzen-ji’s serene grounds, less crowded at dusk—enjoy forested paths and iconic aqueduct.",
+//                 "link": "https://www.japan-guide.com/e/e3908.html",
+//                 "youtubeLink": "https://www.youtube.com/watch?v=MNvDKfJbjmo",
+//                 "cost": 5
+//             },
+//             "transport": [
+//                 "Walk",
+//                 "Bus"
+//             ],
+//             "notes": "Wear comfortable walking shoes; both Philosopher's Path and Nanzen-ji are scenic and shaded."
+//         },
+//         {
+//             "day": 2,
+//             "date": "2025-08-02",
+//             "morning": {
+//                 "activity": "Early Morning at Fushimi Inari Taisha",
+//                 "location": "Fushimi Inari Taisha",
+//                 "description": "Beat the crowds at the iconic thousand torii gates and continue up the scenic mountain trails.",
+//                 "link": "https://www.japan-guide.com/e/e3915.html",
+//                 "youtubeLink": "https://www.youtube.com/watch?v=Hzc4rDAn4aY",
+//                 "cost": 0
+//             },
+//             "afternoon": {
+//                 "activity": "Vegetarian Udon Lunch & Tofuku-ji Temple",
+//                 "location": "Tofuku-ji Temple and Ganko Nijoen (Veg options)",
+//                 "description": "Savor handmade udon at a local spot before heading to Tofuku-ji, a hidden zen gem with lush gardens.",
+//                 "link": "https://tofukuji.jp/en/",
+//                 "youtubeLink": "https://www.youtube.com/watch?v=UnR5V3-XOI4",
+//                 "cost": 18
+//             },
+//             "evening": {
+//                 "activity": "Stroll through Gion’s Old Streets",
+//                 "location": "Gion District",
+//                 "description": "Evening wander in historic Gion, with traditional wooden machiya and possible brief geisha sightings.",
+//                 "link": "https://www.japan-guide.com/e/e3902.html",
+//                 "youtubeLink": "https://www.youtube.com/watch?v=G7zW4kQN_8c",
+//                 "cost": 0
+//             },
+//             "transport": [
+//                 "Train",
+//                 "Walk"
+//             ],
+//             "notes": "Start early at Fushimi Inari; many steps involved. Evening in Gion—dress light for summer."
+//         },
+//         {
+//             "day": 3,
+//             "date": "2025-08-03",
+//             "morning": {
+//                 "activity": "Arashiyama Bamboo Grove & Okochi Sanso Villa",
+//                 "location": "Arashiyama",
+//                 "description": "Walk the magical bamboo groves and tour Okochi Sanso Villa for breathtaking mountain views.",
+//                 "link": "https://www.japan-guide.com/e/e3912.html",
+//                 "youtubeLink": "https://www.youtube.com/watch?v=rQ0zhs1v8g0",
+//                 "cost": 10
+//             },
+//             "afternoon": {
+//                 "activity": "Shigetsu Zen Vegetarian Lunch & Tenryu-ji Temple",
+//                 "location": "Shigetsu Restaurant (Tenryu-ji Temple Grounds)",
+//                 "description": "Try shojin ryori (Buddhist vegetarian cuisine) inside the exquisite garden setting of Tenryu-ji.",
+//                 "link": "https://www.tenryuji.com/en/shigetsu/",
+//                 "youtubeLink": "https://www.youtube.com/watch?v=pIG5WxR5tTw",
+//                 "cost": 35
+//             },
+//             "evening": {
+//                 "activity": "Boat Ride on Hozugawa River",
+//                 "location": "Hozugawa River, Arashiyama",
+//                 "description": "Relax with an evening boat ride on the river, surrounded by forested hills and cooling breezes.",
+//                 "link": "https://www.hozugawakudari.jp/en/",
+//                 "youtubeLink": "https://www.youtube.com/watch?v=qv23Dv_rhZQ",
+//                 "cost": 45
+//             },
+//             "transport": [
+//                 "Train",
+//                 "Walk",
+//                 "Boat"
+//             ],
+//             "notes": "Cooler in Arashiyama due to shade; bring hat and water. Reserve riverside boat in advance."
+//         },
+//         {
+//             "day": 4,
+//             "date": "2025-08-04",
+//             "morning": {
+//                 "activity": "Kurama Temple and Mountain Hike",
+//                 "location": "Kurama-dera",
+//                 "description": "Escape the city on a wooded hike, discovering the hidden mountain temple of Kurama-dera.",
+//                 "link": "https://www.insidekyoto.com/kurama-and-kibune",
+//                 "youtubeLink": "https://www.youtube.com/watch?v=3iofa5IygK4",
+//                 "cost": 3
+//             },
+//             "afternoon": {
+//                 "activity": "Lunch by the River in Kibune (Vegetarian Kaiseki)",
+//                 "location": "Kibune Kawadoko Restaurants",
+//                 "description": "Enjoy a cool, multi-course vegetarian meal at a riverside platform restaurant in Kibune.",
+//                 "link": "https://www.japan-guide.com/e/e3966.html",
+//                 "youtubeLink": "https://www.youtube.com/watch?v=CD44s_S4TJ0",
+//                 "cost": 40
+//             },
+//             "evening": {
+//                 "activity": "Soak in Kurama Onsen",
+//                 "location": "Kurama Onsen",
+//                 "description": "Unwind in a rural hot spring bath overlooking forested mountains (private/family baths available).",
+//                 "link": "https://www.kurama-onsen.co.jp/english.html",
+//                 "youtubeLink": "https://www.youtube.com/watch?v=OHOku11I8Bw",
+//                 "cost": 18
+//             },
+//             "transport": [
+//                 "Eizan Railway",
+//                 "Walk"
+//             ],
+//             "notes": "Bring hiking gear and a towel for onsen. Reserve kawadoko lunch if possible (limited summer seating)."
+//         },
+//         {
+//             "day": 5,
+//             "date": "2025-08-05",
+//             "morning": {
+//                 "activity": "Explore Daigo-ji Temple Complex",
+//                 "location": "Daigo-ji Temple",
+//                 "description": "Discover the vast UNESCO temple grounds, hidden pagodas, and serene pond gardens far from city crowds.",
+//                 "link": "https://www.daigoji.or.jp/english/",
+//                 "youtubeLink": "https://www.youtube.com/watch?v=nq18ju6NAH4",
+//                 "cost": 8
+//             },
+//             "afternoon": {
+//                 "activity": "Vegetarian Bento Lunch & Uji Byodo-in Visit",
+//                 "location": "Uji (Byodo-in Temple and veggie café)",
+//                 "description": "Catch a train to Uji, taste matcha treats and vegetarian bento, then see the Phoenix Hall temple.",
+//                 "link": "https://www.japan-guide.com/e/e3975.html",
+//                 "youtubeLink": "https://www.youtube.com/watch?v=6-ju2ktbFsM",
+//                 "cost": 20
+//             },
+//             "evening": {
+//                 "activity": "Return to Kyoto and Farewell Dinner",
+//                 "location": "Vegans Cafe & Restaurant, Kyoto",
+//                 "description": "Wrap up with a delicious plant-based dinner at a local-favorite spot with creative Japanese cuisine.",
+//                 "link": "https://veganscafe.com/",
+//                 "youtubeLink": "https://www.youtube.com/watch?v=kT0T9ssPDRc",
+//                 "cost": 25
+//             },
+//             "transport": [
+//                 "Train",
+//                 "Walk"
+//             ],
+//             "notes": "Uji can be very hot in August—bring sunblock. Savour final Kyoto moments with matcha and food."
+//         }
+//     ],
+//     "summary": "This mid-budget itinerary blends Kyoto’s cultural gems and tranquil nature escapes with unique hidden temples, scenic walks, and standout vegetarian meals every day, ensuring a balanced local experience from city pathways to rural mountain retreats.",
+//     "user": "68617be21337057828169caa"
+// }

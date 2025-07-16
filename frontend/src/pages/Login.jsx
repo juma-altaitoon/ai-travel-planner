@@ -62,7 +62,7 @@ export default function Login () {
             console.log(userLogin);
             await login(userLogin);
             console.log(message);
-            navigate("/")
+            navigate("/itinerary")
         } catch (error) {
             console.error(error.message);
             setErrors({ form: "Login failed. Please check your credentials."});

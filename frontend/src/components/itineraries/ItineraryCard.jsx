@@ -3,11 +3,11 @@ import { Button, Card, CardActionArea, CardContent, CardMedia, Typography } from
 import AuthContext from '../../context/AuthContext';
 import { Link, useNavigate } from 'react-router';
 
-export default function ItineraryCard ({ id, title, subtitle, imageUrl, onView  }) {
+export default function ItineraryCard ({ tripId, title, subtitle, imageUrl, onView  }) {
 
     return (
         <>
-            <Link to={`/itinerary/${id}`} style={{ textDecoration: "none" }}>
+            <Link to={`/itinerary/${tripId}`} style={{ textDecoration: "none" }}>
                 <CardActionArea onClick={onView} sx={{ borderRadius: 16, transition: "0.2s", "&:hover": { transform: "scale(1.1)" } }}> 
                     <Card sx={{  minWidth: 100, borderRadius: 16, boxShadow: "none", "&:hover": { boxShadow: "0 6px 12px 0 green " } }}>
                         <CardMedia
@@ -22,7 +22,7 @@ export default function ItineraryCard ({ id, title, subtitle, imageUrl, onView  
                         />
                         <CardContent sx={{ bgcolor: "primary.main", p: 1 }}>
                             <Typography variant="body1" sx={{ color: "#fff", textTransform: "uppercase" }}>{title}</Typography>
-                            <Typography variant='subtitle2' sx={{ mx: 2, mt: 1, color: '#fff', opacity: 0.85, }} >{subtitle}</Typography>
+                            <Typography variant='caption' sx={{ mx: 2, mt: 1, color: '#fff', opacity: 0.85 }} >{subtitle}</Typography>
                         </CardContent>
                     </Card>
                 </CardActionArea>

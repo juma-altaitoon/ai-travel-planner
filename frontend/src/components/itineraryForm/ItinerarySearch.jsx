@@ -79,8 +79,8 @@ export default function ItineraryForm(){
         await Axios.post(BACKEND_URL+'/itinerary/generate', form, {withCredentials: true})
             .then((response) => {
                 console.log(response.data)
-                const generatedItinerary = response.data;
-                navigate("/itinerary/generate", { state: { itinerary: generatedItinerary } })
+                const generatedItinerary = response.data.itinerary;
+                navigate("/itinerary/generated", { state: { itinerary: generatedItinerary } })
             })
             .catch((error) => {
                 console.error("Error generating itinerary: ", error.message)

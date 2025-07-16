@@ -29,7 +29,7 @@ export const getItineraries = async (req, res) => {
 // GET itinerary by ID
 export const getItineraryById = async (req, res) => {
     try {
-        const id = req.body;
+        const { id } = req.body;
         const itinerary = await Itinerary.findById(id);
         if (!itinerary) {
             return res.status(404).json({ message: "Itinerary not found." });

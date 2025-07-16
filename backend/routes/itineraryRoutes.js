@@ -6,11 +6,11 @@ const itineraryRouter = express.Router();
 
 // Protected routes
 itineraryRouter.get('/', authenticate, itinerary.getItineraries);
-itineraryRouter.get('/id', authenticate, itinerary.getItineraryById);
+itineraryRouter.post('/id', authenticate, itinerary.getItineraryById);
 itineraryRouter.get('/test', itinerary.generateTest);
 itineraryRouter.post('/generate', authenticate, itinerary.generateItinerary);
 itineraryRouter.post('/save', authenticate, itinerary.saveItinerary);
-itineraryRouter.get('/delete', authenticate, itinerary.deleteItinerary);
+itineraryRouter.delete('/delete', authenticate, itinerary.deleteItinerary);
 
 
 export default itineraryRouter;
