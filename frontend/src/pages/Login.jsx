@@ -159,7 +159,7 @@ export default function Login () {
                         Login
                     </Button>
                     <Grid container >
-                        <Grid xs>
+                        <Grid size={{ xs: 6}}>
                             <MuiLink href='/forgot-password' >Forgot password</MuiLink>
                         </Grid>
                         <Grid >

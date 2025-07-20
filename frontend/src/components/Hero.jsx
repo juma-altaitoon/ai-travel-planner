@@ -1,11 +1,12 @@
 import { Box, Button, Typography } from "@mui/material";
+import { Link } from "react-router";
 
 export default function Hero () {
     
     return (
         <Box sx={{ 
             position: "relative", 
-            // overflow: "hidden", 
+            overflow: "hidden", 
             height: "100vh", 
             color: 'text.primary',  
             p: 4,
@@ -23,7 +24,7 @@ export default function Hero () {
                 style={{
                     position: "absolute",
                     inset: 0,
-                    zIndex: 9,
+                    zIndex: 0,
                     width: "100%",
                     height: "100%",
                     objectFit: "cover",
@@ -42,9 +43,11 @@ export default function Hero () {
             <Typography variant="Subtitle2" sx={{ m: 2, fontWeight:"bold", color: "primary.dark" }}>
                 Destinations, activities and experiences tailored for you.
             </Typography>
-            <Button variant="contained" size="large" sx={{ maxWidth:"50%", m:"auto" }}>
-                Generate My Itinerary
-            </Button>
+            <Link to="/itinerary/form">
+                <Button variant="contained" size="large" sx={{ maxWidth:"50%", m:"auto" }}>
+                    Generate My Itinerary
+                </Button>
+            </Link>
         </Box>
     )
 }

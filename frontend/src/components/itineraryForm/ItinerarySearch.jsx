@@ -102,6 +102,7 @@ export default function ItineraryForm(){
                             fullWidth
                             value={countryObject}
                             onChange={(event, newValue) => handleCountryChange('country', newValue) }
+                            required
                         />
                     </Grid>
                     <Grid size={{xs:12 }}>
@@ -110,36 +111,29 @@ export default function ItineraryForm(){
                             label="City / Region"
                             name="city"
                             onChange={handleChange}
+                            required
                         />
                     </Grid>
-                    <Grid size={{xs:12, sm: 5 }}>
+                    <Grid size={{xs:12, sm: 6 }}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             fullWidth
                             label="Start Date"
-                        
+                            required
                             onChange={(value) => handleDateChange('startDate', value)}
                             // renderInput={(params) => <TextField {...params} fullWidth />}
                         />
                         </LocalizationProvider>
                     </Grid>
-                    <Grid size={{xs:12, sm: 5 }}>
+                    <Grid size={{xs:12, sm: 6 }}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             fullWidth
                             label="End Date"
+                            required
                             onChange={(value) => handleDateChange('endDate', value)}
                         />
                         </LocalizationProvider>
-                    </Grid>
-                    <Grid size={{xs: 12, sm: 2 }}>
-                        <TextField
-                            type='number'
-                            label="Duration"
-                            name= "duration"
-                            value={form.duration}
-                            onChange={handleChange}
-                        />
                     </Grid>
                     <Grid size={{xs:12, sm: 6 }}>
                         <FormControl fullWidth>
@@ -184,7 +178,7 @@ export default function ItineraryForm(){
                     </Grid>
                     <Grid size={{ xs: 12 }} display="flex" justifyContent="center">
                         <Button  variant="contained" color="primary" type="submit">
-                            Submit Itinerary
+                            Generate Itinerary
                         </Button>
                     </Grid>
                 </Grid>

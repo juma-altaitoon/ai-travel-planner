@@ -40,7 +40,7 @@ export default function GeneratedItinerary() {
     }
 
     const handleDelete = () => {
-        // navigate("/itinerary");
+        navigate("/itinerary");
     }
 
     const handleSave = () => {
@@ -139,7 +139,7 @@ export default function GeneratedItinerary() {
                         </Grid>                     
                     </Grid>
                     <CardActions sx={{ m:1, justifyContent: "space-between"}} >
-                        <Button variant='contained' onClick={handleSave}>
+                        <Button variant='contained' onClick={handleSave} aria-label='save'>
                             <SaveIcon/>
                             {/* Save */}
                         </Button>
@@ -150,7 +150,7 @@ export default function GeneratedItinerary() {
                                 :<ExpandMoreIcon/> 
                             }
                         </Button>
-                        <Button variant='contained' color='error' onClick={handleDelete(itinerary.index)}>
+                        <Button variant='contained' color='error' onClick={handleDelete}>
                             <DeleteIcon />
                             {/* Delete */}
                         </Button>

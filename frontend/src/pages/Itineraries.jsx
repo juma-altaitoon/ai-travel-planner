@@ -1,7 +1,9 @@
-import { Typography, Container, Grid, Button, CircularProgress, Box } from '@mui/material';
+import { Typography, Container, Grid, Button, CircularProgress, Box, Fab } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import ItineraryCard from '../components/itineraries/ItineraryCard';
+import AddIcon from '@mui/icons-material/Add';
 import Axios from 'axios';
+import { Link } from 'react-router';
 
 const BACKEND_URL = import.meta.env.VITE_API_URL;
 
@@ -76,6 +78,11 @@ export default function Itineraries() {
             }
         </Container>
       }
+        <Link to="/itinerary/form">
+          <Fab size="large" color="warning" aria-label='add itinerary' sx={{ position: "absolute", right: 15, bottom: 15}} >
+            <AddIcon/>
+          </Fab>
+        </Link>
       </>
     )
 }

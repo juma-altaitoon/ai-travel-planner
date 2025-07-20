@@ -1,11 +1,16 @@
 import { useContext } from "react";
 import { Navigate, Outlet } from "react-router";
 import AuthContext from "./AuthContext";
+import { CircularProgress } from "@mui/material";
 
-const ProtectedRoute = () => {
-    const { isAuthenticated } = useContext(AuthContext);
+export default function ProtectedRoute() {
+    const { isAuthenticated, checkingAuth } = useContext(AuthContext);
+
+    if (checkingAuth) {
+        return (
+            <CircularProgress/>
+        )
+    }
 
     return isAuthenticated ? <Outlet/> : <Navigate to='/login' />
 };
-
-export default ProtectedRoute;

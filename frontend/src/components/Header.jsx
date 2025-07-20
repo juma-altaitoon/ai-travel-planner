@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState, useContext } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -35,6 +35,9 @@ export default function Header({ mode, setMode}) {
   const [anchorElUser, setAnchorElUser] = useState(null);
   const pages = (isAuthenticated ? authPages : normalPages)
 
+  useEffect(() => {
+    console.log("Authentication Status Changed: ", isAuthenticated, user);
+  },[isAuthenticated, user])
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -63,7 +66,7 @@ export default function Header({ mode, setMode}) {
   }
 
   return (
-    <AppBar elevation={5} position="static" color="transparent" enableColorOnDark >
+    <AppBar elevation={5} position="static" enableColorOnDark sx={{ bgcolor: "transparent"}} >
       <Container maxWidth="xl" sx={{bgcolor: "transparent", boxShadow: "none"}}>
         <Toolbar disableGutters sx={{ display: 'flex', justifyContent: 'center', bgcolor:"transparent" }}>
           <Avatar src={"branding_Icon.png"}  sx={{ display: {xs: 'none', md:"flex"}, m:2, height:40, width:40}}/>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material';
 import AuthContext from '../../context/AuthContext';
-import { Link, useNavigate } from 'react-router';
+import { Link } from 'react-router';
 
 export default function ItineraryCard ({ tripId, title, subtitle, imageUrl, onView  }) {
 
