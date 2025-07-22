@@ -69,7 +69,6 @@ export const generateItinerary = async (req, res) => {
         city,
         startDate,
         endDate,
-        duration,
         preferences,
         budget,
         additionalRequest,
@@ -88,7 +87,6 @@ export const generateItinerary = async (req, res) => {
         "city": "String"
         "startDate": "YYYY-MM-DD",
         "endDate": "YYYY-MM-DD",
-        "duration": Integer, 
         "preferences": ["String1", "String2",...],
         "budget": "low" | "mid" | "high",
         "additionalRequest": "String",
@@ -136,7 +134,6 @@ export const generateItinerary = async (req, res) => {
     City: ${city}
     Start Date : ${startDate},
     End Date : ${endDate},
-    Duration : ${duration} days,
     Preference : ${preferences},
     Budget : ${budget},
     Additional Requests (Optional): ${additionalRequest}
@@ -171,7 +168,7 @@ export const saveItinerary = async (req, res) => {
         const itinerary = new Itinerary(data);
         await itinerary.save()
             .then((savedItinerary) => {
-                return res.status(200).json({ message: "Itinerary saved."});
+                return res.status(201).json({ message: "Itinerary saved."});
             })
             .catch((error) => {
                 console.error("Error saving Itinerary: ", error.message);

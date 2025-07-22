@@ -7,6 +7,7 @@ import connectMongoDB from './config/db.js';
 import authRouter from './routes/authRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import itineraryRouter from './routes/itineraryRoutes.js';
+import chatRouter from './routes/chatRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use('/itinerary', itineraryRouter);
+app.use('/chat', chatRouter)
 
 // MongoDB Connection
 connectMongoDB();

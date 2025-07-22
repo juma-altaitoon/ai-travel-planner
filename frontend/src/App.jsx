@@ -20,6 +20,7 @@ import Itineraries from './pages/Itineraries.jsx';
 import ItineraryDetails from './pages/ItineraryDetails.jsx';
 import ProtectedRoute from './context/ProtectedRoute.jsx';
 import Profile from './pages/Profile.jsx';
+import Chat from './pages/Chat.jsx';
 
 
 export default function App() {
@@ -44,6 +45,7 @@ export default function App() {
           <Route path="/forgot-password" element={<ForgotPassword/>}/>
           <Route path="/reset/:reserToken" element={<PasswordReset />} />
           <Route path='/user' element={<Profile />} />
+          <Route path='/chat' element={<Chat/>} />
 
           <Route element={<ProtectedRoute/>} >
             <Route path='/Itinerary' element={<Itineraries/>}/>
