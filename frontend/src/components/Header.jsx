@@ -22,7 +22,7 @@ import FaceIcon from '@mui/icons-material/Face'
 
 
 const normalPages = [{name:'About', link: "about"}, {name: 'Contact', link: "#contact"}];
-const authPages = [{name:'About', link: "about"}, {name: 'Itinerary', link: "itinerary"},{name: "Generate", link: "itinerary/form"}, {name: 'Contact', link: "#contact"}]
+const authPages = [{name:'About', link: "about"}, {name: 'Itinerary', link: "itinerary"},{name: "Generate", link: "itinerary/form"}, {name: "Chat", link: "chat"}, {name: 'Contact', link: "#contact"}]
 const settings = ['Profile', 'Collection', 'Logout'];
 
 export default function Header({ mode, setMode}) {

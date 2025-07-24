@@ -1,7 +1,7 @@
 import Chat from "../models/Chat.js";
 import OpenAI from "openai";
 import dotenv from 'dotenv';
-import { response } from "express";
+
 
 dotenv.config()
 
@@ -15,22 +15,16 @@ export const createChat = async (req, res) => {
     try {
         const user = req.user;
                 
-        const systemMessage = `
-            You are an expert travel advisor helping users plan personalized trips.
-            Your goal is to suggest day-by-day activities, places to visit, and travel tips based on a user's input.            
-            Personalize your advice and answer user questions clearly and accurately
+        const systemMessage = 
+        `You are an expert travel advisor helping users plan personalized trips.
+        Your goal is to suggest day-by-day activities, places to visit, and travel tips based on a user's input.            
+        Personalize your advice and answer user questions clearly and accurately
         `
         const chatMessage = { role: "system", content: systemMessage };
-        const chat = new Chat({ messages: [ chatMessage ], user: user });
-        await chat.save()
-            .then((savedChat) => {
-                return res.status(201).json({ message :"Chat created." , sessionId: savedChat.sessionId });
-            })
-            .catch((error) => {
-                console.error( "Error creating chat", error.message );
-                return res.status(500).json({ message: "Error creating chat", error: error.message });
-            })
+        const chat = await Chat.create({ messages: [ chatMessage ], user: user });
+        console.log(chat)
 
+        return res.status(201).json({ message :"Chat created." , sessionId: chat.sessionId });
     } catch (error) {
         console.error( "Error creating chat", error.message );
         return res.status(500).json({ message: "Error creating chat", error: error.message });
@@ -38,43 +32,24 @@ export const createChat = async (req, res) => {
 
 }
 
-
 export const createItineraryChat = async (req, res) => {
     try {
         const user = req.user;
-        const {
-            country,
-            city,
-            startDate,
-            endDate,
-            preferences,
-            budget,
-            additionalRequest,
-        } = req.body;
+        const itinerary = req.body;
         
         const systemMessage = `
             You are an expert travel advisor helping users plan personalized trips.
             Your goal is to suggest day-by-day activities, places to visit, and travel tips based on their itinerary.
-            Here is the user's itinerary:
-            -   Destination : ${city}, ${country}
-            -   Travel Dates : ${startDate} to ${endDate}
-            -   Preference : ${preferences}
-            -   Budget : ${budget}
-            ${additionalRequest? `Additional Notes: ${additionalRequest}` : ""}
+            Here is the user's generated itinerary in JSON:
+            ${itinerary}
                         
             Use this context to personalize your advice and answer user questions clearly and accurately
         `
         const chatMessage = { role: "system", content: systemMessage };
-        const chat = new Chat({ messages: [ chatMessage ], user: user });
-        await chat.save()
-            .then((savedChat) => {
-                return res.status(201).json({ message :"Chat created." , sessionId: savedChat.sessionId });
-            })
-            .catch((error) => {
-                console.error( "Error creating chat", error.message );
-                return res.status(500).json({ message: "Error creating chat", error: error.message });
-            })
-
+        
+        const chat = await Chat.create({ messages: [ chatMessage ], user: user, itinerary: itinerary._id });
+        
+        return res.status(201).json({ message :"Chat created." , sessionId: chat.sessionId });
     } catch (error) {
         console.error( "Error creating chat", error.message );
         return res.status(500).json({ message: "Error creating chat", error: error.message });
@@ -105,6 +80,21 @@ export const getChat = async (req, res) => {
             return res.status(404).json({ message: "Chat session not found" });
         }
         return res.status(200).json({ message: "Chat session found", session  });
+    } catch (error) {
+        console.error("Failed to fetch chat: ", error.message );
+        return res.status(500).json({ message: "Failed to fetch chat: ", error: error.message });
+    }
+}
+
+export const getItineraryChat = async (req, res) => {
+    const { itineraryId } = req.body;
+    console(typeof(itineraryId))
+    try {
+        const session = await Chat.findOne({ itinerary: itineraryId, user: req.user });
+        if (!session){
+            return res.status(404).json({ message: "Chat session not found" });
+        }
+        return res.status(200).json({ message: "Chat session found", sessionId: session.sessionId  });
     } catch (error) {
         console.error("Failed to fetch chat: ", error.message );
         return res.status(500).json({ message: "Failed to fetch chat: ", error: error.message });
@@ -166,4 +156,4 @@ export const deleteChat = async (req, res) => {
 }
 
 
-export default {createChat, getChat, getChatList, postMessage, deleteChat};
+export default {createChat, createItineraryChat, getChat, getItineraryChat, getChatList, postMessage, deleteChat};

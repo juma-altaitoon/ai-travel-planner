@@ -8,12 +8,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { TabPanel, a11yProps } from './TabPanel';
 import DailyActivities from './DailyActivities';
 import Axios from 'axios';
-import { useLocation, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 
 const BACKEND_URL = import.meta.env.VITE_API_URL;
 const saveItinerary = async (itinerary) => {
     try {
-        const response = await Axios.post(BACKEND_URL+"/Itinerary/save", itinerary, { withCredentials: true } );
+        const response = await Axios.post(BACKEND_URL+"/itinerary/save", itinerary, { withCredentials: true } );
         console.log(response.data)
         return response.data;
     
@@ -23,12 +23,12 @@ const saveItinerary = async (itinerary) => {
     }
 }
 
-export default function GeneratedItinerary() {
-    const { state } = useLocation();
+export default function GeneratedItinerary({ itinerary }) {
+    // const { state } = useLocation();
     const navigate = useNavigate();
     const [ expand, setExpand ] = useState(false);
     const [ tabIndex, setTabIndex ] = useState(0);
-    const [ itinerary, setItinerary ] = useState(state?.itinerary || null);
+    // const [ itinerary, setItinerary ] = useState(state?.itinerary || null);
 
     
     const handleExpand = () => {
@@ -43,13 +43,13 @@ export default function GeneratedItinerary() {
         navigate("/itinerary");
     }
 
-    const handleSave = () => {
+    const handleSave = async () => {
         try {
-            saveItinerary(itinerary);
+            await saveItinerary(itinerary);
             console.log("Successful Save.")
             navigate("/itinerary")
         } catch (error) {
-            console.error("Error Saving Itinerary: ", error)
+            throw new Error("Error Saving Itinerary: ", error.message);
         }
     }
 
@@ -70,118 +70,125 @@ export default function GeneratedItinerary() {
     return(
         <>
             <Container maxWidth="md" sx={{ my: 5 }}>
-                <Card 
-                    sx={{ 
-                        borderRadius: 5,
-                        transition: "box-shadow 0.3s, transform 0.3s",
-                        boxShadow: 1,
-                        "&:hover": {
-                            border: "3px solid",
-                            borderColor: "primary.main",
-                            transform: "scale(1.01)",
-                            cursor: "pointer"
-                        }
-                    }}
-                >
-                    <CardHeader 
-                        title={itinerary.city + ", " + itinerary.country + " - Itinerary"}
-                        subheader={formatHeaderDate(itinerary.startDate) + " - " + formatHeaderDate(itinerary.endDate) }    
-                    />
-                    <Divider/>
-                    <Grid container spacing={1} alignItems="center" justifyContent="center" >
-                        <Grid size={{ xs:12, md: 12 }}>
-                            <CardContent >
-                                <Typography variant='body1' color="info" fontWeight={'bold'} m={1}>
-                                    {itinerary.friendlyOneLiner}
-                                </Typography>
-                            </CardContent>
-                        </Grid>
-                        <Grid size={{ xs:12, md: 5 }}>
-                            <CardMedia 
-                                component="img"
-                                height={200}
-                                src='/vite.svg' 
-                                sx={{ 
-                                    width: "100%",
-                                    borderRadius: 5,
-                                    boxShadow: 2,
-                                    objectFit: "contain"
-                                }}
-                            />
-                        </Grid>
-                        <Grid size={{ xs:12, md: 7 }}>
-                            <CardContent sx={{ px: 1 }} >
-                                <Typography variant='subtitle1'm={1}>
-                                    {itinerary.summary}
-                                </Typography> 
-                            </CardContent>
-                        </Grid>
-                        <Grid size={{ xs:12, md: 5 }}>    
-                            <CardContent>
-                                <Typography fontWeight="bold" mb={1}>
-                                    Preferences: 
-                                </Typography>
-                                {itinerary.preferences.map((preference) => (
-                                    <Chip key={preference} label={preference} size="small" color='primary'/>
-                                ))}
-                                <Chip label={`Budget: ${itinerary.budget}`} size="small" color='secondary' />
-                            </CardContent>
-                        </Grid>
-                        <Grid size={{ xs:12, md: 7 }}>    
-                            <CardContent>
-                                <Typography fontWeight="bold" mb={1} >
-                                    Additional Request
-                                </Typography>
-                                <Typography variant="subtitle2" color='secondary'>
-                                    {itinerary.additionalRequest}
-                                </Typography>   
-                            </CardContent> 
-                        </Grid>                     
-                    </Grid>
-                    <CardActions sx={{ m:1, justifyContent: "space-between"}} >
-                        <Button variant='contained' onClick={handleSave} aria-label='save'>
-                            <SaveIcon/>
-                            {/* Save */}
-                        </Button>
-                        <Button variant="outlined" aria-label='expand itinerary' onClick={handleExpand} aria-expanded={expand} color='info'>
-                            Daily Schedule 
-                            { expand 
-                                ? <ExpandLessIcon/>
-                                :<ExpandMoreIcon/> 
+            {itinerary ?
+                <>
+                    <Card 
+                        sx={{ 
+                            borderRadius: 5,
+                            transition: "box-shadow 0.3s, transform 0.3s",
+                            boxShadow: 1,
+                            "&:hover": {
+                                border: "3px solid",
+                                borderColor: "primary.main",
+                                transform: "scale(1.01)",
+                                cursor: "pointer"
                             }
-                        </Button>
-                        <Button variant='contained' color='error' onClick={handleDelete}>
-                            <DeleteIcon />
-                            {/* Delete */}
-                        </Button>
-                    </CardActions>
-                </Card>
-                    
-                <Collapse in={expand} unmountOnExit>
-                    <Card>
-                        <AppBar position='static'>
-                            <Tabs
-                                value={tabIndex}
-                                onChange={handleTabChange}
-                                indicatorColor="secondary"
-                                textColor="inherit"
-                                variant="scrollable"
-                                allowScrollButtonsMobile
-                                scrollButtons
-                            >   
-                                {itinerary.itineraryDays.map((data, idx) => (
-                                    <Tab label={formatTabDateLabel(data.day, data.date)} {...a11yProps(idx)} key={data.day} />
-                                ))} 
-                            </Tabs>
-                        </AppBar>
+                        }}
+                    >
+                        <CardHeader 
+                            title={itinerary.city + ", " + itinerary.country + " - Itinerary"}
+                            subheader={formatHeaderDate(itinerary.startDate) + " - " + formatHeaderDate(itinerary.endDate) }    
+                        />
+                        <Divider/>
+                        <Grid container spacing={1} alignItems="center" justifyContent="center" >
+                            <Grid size={{ xs:12, md: 12 }}>
+                                <CardContent >
+                                    <Typography variant='body1' color="info" fontWeight={'bold'} m={1}>
+                                        {itinerary.friendlyOneLiner}
+                                    </Typography>
+                                </CardContent>
+                            </Grid>
+                            <Grid size={{ xs:12, md: 5 }}>
+                                <CardMedia 
+                                    component="img"
+                                    height={200}
+                                    src='/vite.svg' 
+                                    sx={{ 
+                                        width: "100%",
+                                        borderRadius: 5,
+                                        boxShadow: 2,
+                                        objectFit: "contain"
+                                    }}
+                                />
+                            </Grid>
+                            <Grid size={{ xs:12, md: 7 }}>
+                                <CardContent sx={{ px: 1 }} >
+                                    <Typography variant='subtitle1'm={1}>
+                                        {itinerary.summary}
+                                    </Typography> 
+                                </CardContent>
+                            </Grid>
+                            <Grid size={{ xs:12, md: 5 }}>    
+                                <CardContent>
+                                    <Typography fontWeight="bold" mb={1}>
+                                        Preferences: 
+                                    </Typography>
+                                    {itinerary.preferences.map((preference) => (
+                                        <Chip key={preference} label={preference} size="small" color='primary'/>
+                                    ))}
+                                    <Chip label={`Budget: ${itinerary.budget}`} size="small" color='secondary' />
+                                </CardContent>
+                            </Grid>
+                            <Grid size={{ xs:12, md: 7 }}>    
+                                <CardContent>
+                                    <Typography fontWeight="bold" mb={1} >
+                                        Additional Request
+                                    </Typography>
+                                    <Typography variant="subtitle2" color='secondary'>
+                                        {itinerary.additionalRequest}
+                                    </Typography>   
+                                </CardContent> 
+                            </Grid>                     
+                        </Grid>
+                        <CardActions sx={{ m:1, justifyContent: "space-between"}} >
+                            <Button variant='contained' onClick={handleSave} aria-label='save'>
+                                <SaveIcon/>
+                                {/* Save */}
+                            </Button>
+                            <Button variant="outlined" aria-label='expand itinerary' onClick={handleExpand} aria-expanded={expand} color='info'>
+                                Daily Schedule 
+                                { expand 
+                                    ? <ExpandLessIcon/>
+                                    :<ExpandMoreIcon/> 
+                                }
+                            </Button>
+                            <Button variant='contained' color='error' onClick={handleDelete}>
+                                <DeleteIcon />
+                                {/* Delete */}
+                            </Button>
+                        </CardActions>
                     </Card>
-                    {itinerary.itineraryDays.map((data, idx) => (
-                        <TabPanel value={tabIndex} index={idx} key={data.day}>
-                            <DailyActivities dayActivities={data}/>
-                        </TabPanel>
-                    ))}     
-                </Collapse> 
-                
+                        
+                    <Collapse in={expand} unmountOnExit>
+                        <Card>
+                            <AppBar position='static'>
+                                <Tabs
+                                    value={tabIndex}
+                                    onChange={handleTabChange}
+                                    indicatorColor="secondary"
+                                    textColor="inherit"
+                                    variant="scrollable"
+                                    allowScrollButtonsMobile
+                                    scrollButtons
+                                >   
+                                    {itinerary.itineraryDays.map((data, idx) => (
+                                        <Tab label={formatTabDateLabel(data.day, data.date)} {...a11yProps(idx)} key={data.day} />
+                                    ))} 
+                                </Tabs>
+                            </AppBar>
+                        </Card>
+                        {itinerary.itineraryDays.map((data, idx) => (
+                            <TabPanel value={tabIndex} index={idx} key={data.day}>
+                                <DailyActivities dayActivities={data}/>
+                            </TabPanel>
+                        ))}     
+                    </Collapse> 
+                </>    
+                    :
+                    <Typography variant='h3' color='warning'>
+                            Oh no! We something went wrong.
+                    </Typography>
+                }    
             </Container>
         </>
     )

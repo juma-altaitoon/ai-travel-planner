@@ -7,6 +7,8 @@ import dayjs from 'dayjs';
 import Axios from 'axios';
 import { useNavigate } from 'react-router';
 
+const BACKEND_URL = import.meta.env.VITE_API_URL;
+
 const preferencesOptions = [
     "Cultural",
     "Adventure",
@@ -18,8 +20,25 @@ const preferencesOptions = [
     "Sightseeing"
 ];
 
+const createItineraryChat = async (itinerary) => {
+    const chatResponse = await Axios.post(BACKEND_URL+"/chat/itinerary", itinerary, { withCredentials: true })
+    const sessionId = chatResponse.data.sessionId;
+    return sessionId;
+}
+
+const generateItinerary = async (formData) => {
+    try {
+        const response = await Axios.post(BACKEND_URL+'/itinerary/generate', formData, {withCredentials: true});
+        console.log(response.data)
+        const generatedItinerary = response.data.itinerary;
+        return generatedItinerary;
+    } catch (error) {
+        console.error("Error generating itinerary: ", error.message)        
+    }
+}
+
 export default function ItineraryForm(){
-    const BACKEND_URL = import.meta.env.VITE_API_URL;
+
     const navigate = useNavigate();
 
     const [ countryObject, setCountryObject ] = useState(null);
@@ -76,17 +95,17 @@ export default function ItineraryForm(){
     const handleSubmitForm = async (event) => {
         event.preventDefault();
         console.log(form)
-        await Axios.post(BACKEND_URL+'/itinerary/generate', form, {withCredentials: true})
-            .then((response) => {
-                console.log(response.data)
-                const generatedItinerary = response.data.itinerary;
-                navigate("/itinerary/generated", { state: { itinerary: generatedItinerary } })
-            })
-            .catch((error) => {
-                console.error("Error generating itinerary: ", error.message)
-            })
+        try {
+            const generatedItinerary = await generateItinerary(form);
+            const sessionId = await createItineraryChat(generatedItinerary);
+            navigate("/itinerary/generated", { state: { itinerary: generatedItinerary, sessionId: sessionId } })    
+        } catch (error) {
+            console.error("Error generating itinerary: ", error);
+        }
+        
+    
     }
- 
+
 
     return (
         <Container maxWidth='sm' component={Paper} sx={{ display: "flex", justifyContent:"center", my: 4 }}>

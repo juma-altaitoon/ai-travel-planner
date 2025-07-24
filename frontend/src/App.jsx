@@ -21,6 +21,7 @@ import ItineraryDetails from './pages/ItineraryDetails.jsx';
 import ProtectedRoute from './context/ProtectedRoute.jsx';
 import Profile from './pages/Profile.jsx';
 import Chat from './pages/Chat.jsx';
+import Planner from './pages/Planner.jsx';
 
 
 export default function App() {
@@ -51,7 +52,7 @@ export default function App() {
             <Route path='/Itinerary' element={<Itineraries/>}/>
             <Route path='/Itinerary/:id' element={<ItineraryDetails/>}/>
             <Route path='/Itinerary/form' element={<ItineraryForm/>}/>
-            <Route path='/Itinerary/generated' element={<GeneratedItinerary/>}/>
+            <Route path='/Itinerary/generated' element={<Planner/>}/>
             
           </Route>
           <Route path="/404" element={<NotFound />} />
