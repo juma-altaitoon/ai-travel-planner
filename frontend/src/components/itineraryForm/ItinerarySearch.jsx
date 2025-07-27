@@ -6,6 +6,7 @@ import CountrySelect from './CountrySelect';
 import dayjs from 'dayjs';
 import Axios from 'axios';
 import { useNavigate } from 'react-router';
+import ProgressDialog from '../ProgressDialog';
 
 const BACKEND_URL = import.meta.env.VITE_API_URL;
 
@@ -22,8 +23,8 @@ const preferencesOptions = [
 
 const createItineraryChat = async (itinerary) => {
     const chatResponse = await Axios.post(BACKEND_URL+"/chat/itinerary", itinerary, { withCredentials: true })
-    const sessionId = chatResponse.data.sessionId;
-    return sessionId;
+    const chatId = chatResponse.data.chatId;
+    return chatId;
 }
 
 const generateItinerary = async (formData) => {
@@ -40,7 +41,7 @@ const generateItinerary = async (formData) => {
 export default function ItineraryForm(){
 
     const navigate = useNavigate();
-
+    const [ loading, setLoading ] = useState(false);
     const [ countryObject, setCountryObject ] = useState(null);
     const [ form, setForm ] = useState({
         country: null,
@@ -51,8 +52,14 @@ export default function ItineraryForm(){
         preferences: [],
         budget: '',
         additionalRequest: '',
-    })
-
+    });
+    
+    // Text to be used in the loading animation 
+    const typingSteps = [
+        "Analyzing your prefrences...", 1000,
+        "Researching destinations...", 1000,
+        "Finalizing your plan...", 1500,
+    ];
 
     const handleChange = (event) => {
         const data = { ...form };
@@ -94,114 +101,122 @@ export default function ItineraryForm(){
 
     const handleSubmitForm = async (event) => {
         event.preventDefault();
+        setLoading(true)
         console.log(form)
         try {
             const generatedItinerary = await generateItinerary(form);
-            const sessionId = await createItineraryChat(generatedItinerary);
-            navigate("/itinerary/generated", { state: { itinerary: generatedItinerary, sessionId: sessionId } })    
+            const chatId = await createItineraryChat(generatedItinerary);
+            generatedItinerary["chat"] = chatId;
+            console.log(generatedItinerary.chat)
+            navigate("/itinerary/generated", { state: { itinerary: generatedItinerary, chatId: chatId }, replace: true })    
         } catch (error) {
             console.error("Error generating itinerary: ", error);
+            setLoading(false);
+            // Error Snackbar
+        } finally {
+            setLoading(false)
         }
-        
-    
     }
 
 
     return (
-        <Container maxWidth='sm' component={Paper} sx={{ display: "flex", justifyContent:"center", my: 4 }}>
-            <Box maxWidth={600} component="form" onSubmit={handleSubmitForm} sx={{ p: 4 }} >
-            {/* Itinerary Form */}
-                <Typography variant='h4' fontWeight="bold" color="secondary.dark" textAlign="center" m={2}>
-                    Itinerary Form
-                </Typography>
-                <Divider sx={{ mb: 2 }}/>
-                <Grid container spacing={3}>
-                    <Grid size={{xs:12, sm: 12 }} sx={{ mt: 5, mb: 3 }}>
-                        <CountrySelect
-                            fullWidth
-                            value={countryObject}
-                            onChange={(event, newValue) => handleCountryChange('country', newValue) }
-                            required
-                        />
+        <>
+            <Container maxWidth='sm' component={Paper} sx={{ display: "flex", justifyContent:"center", my: 4 }}>
+                <Box maxWidth={600} component="form" onSubmit={handleSubmitForm} sx={{ p: 4 }} >
+                {/* Itinerary Form */}
+                    <Typography variant='h4' fontWeight="bold" color="secondary.dark" textAlign="center" m={2}>
+                        Itinerary Form
+                    </Typography>
+                    <Divider sx={{ mb: 2 }}/>
+                    <Grid container spacing={2}>
+                        <Grid size={{xs:12, sm: 12 }} sx={{ mt: 5, mb: 3 }}>
+                            <CountrySelect
+                                fullWidth
+                                value={countryObject}
+                                onChange={(event, newValue) => handleCountryChange('country', newValue) }
+                                required
+                            />
+                        </Grid>
+                        <Grid size={{xs:12 }}>
+                            <TextField
+                                fullWidth
+                                label="City / Region"
+                                name="city"
+                                onChange={handleChange}
+                                required
+                            />
+                        </Grid>
+                        <Grid size={{xs:12, sm: 6 }}>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                                fullWidth
+                                label="Start Date"
+                                required
+                                onChange={(value) => handleDateChange('startDate', value)}
+                                // renderInput={(params) => <TextField {...params} fullWidth />}
+                            />
+                            </LocalizationProvider>
+                        </Grid>
+                        <Grid size={{xs:12, sm: 6 }}>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                                fullWidth
+                                label="End Date"
+                                required
+                                onChange={(value) => handleDateChange('endDate', value)}
+                            />
+                            </LocalizationProvider>
+                        </Grid>
+                        <Grid size={{xs:12, sm: 6 }}>
+                            <FormControl fullWidth>
+                                <InputLabel>Budget</InputLabel>
+                                <Select name='budget' value={form.budget} label="Budget" onChange={handleChange}>
+                                    <MenuItem value="low">Low</MenuItem>
+                                    <MenuItem value="mid">Mid</MenuItem>
+                                    <MenuItem value="high">High</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid size={{xs:12, sm: 12 }}>
+                            <FormControl component="fieldset" fullWidth>
+                                <FormLabel>Preferences</FormLabel>
+                                <FormGroup row>
+                                    {preferencesOptions.map((option) => (
+                                        <FormControlLabel
+                                            key={option}
+                                            control={
+                                                <Checkbox
+                                                    checked={form.preferences.includes(option)}
+                                                    onChange={(e) => handleCheckboxChange(e, option)}
+                                                />
+                                            }
+                                            label={option}
+                                            sx={{ color: "secondary.main" }}
+                                        />
+                                    ) )}
+                                </FormGroup>
+                            </FormControl>
+                        </Grid>
+                        <Grid size={{xs:12, sm: 12 }}>
+                            <TextField
+                                label="Additional Request"
+                                multiline
+                                rows={3}
+                                name="additionalRequest"
+                                fullWidth
+                                value={form.additionalRequest}
+                                onChange={handleChange}
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 12 }} display="flex" justifyContent="center">
+                            <Button  variant="contained" color="primary" type="submit">
+                                Generate Itinerary
+                            </Button>
+                        </Grid>
                     </Grid>
-                    <Grid size={{xs:12 }}>
-                        <TextField
-                            fullWidth
-                            label="City / Region"
-                            name="city"
-                            onChange={handleChange}
-                            required
-                        />
-                    </Grid>
-                    <Grid size={{xs:12, sm: 6 }}>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                            fullWidth
-                            label="Start Date"
-                            required
-                            onChange={(value) => handleDateChange('startDate', value)}
-                            // renderInput={(params) => <TextField {...params} fullWidth />}
-                        />
-                        </LocalizationProvider>
-                    </Grid>
-                    <Grid size={{xs:12, sm: 6 }}>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                            fullWidth
-                            label="End Date"
-                            required
-                            onChange={(value) => handleDateChange('endDate', value)}
-                        />
-                        </LocalizationProvider>
-                    </Grid>
-                    <Grid size={{xs:12, sm: 6 }}>
-                        <FormControl fullWidth>
-                            <InputLabel>Budget</InputLabel>
-                            <Select name='budget' value={form.budget} label="Budget" onChange={handleChange}>
-                                <MenuItem value="low">Low</MenuItem>
-                                <MenuItem value="mid">Mid</MenuItem>
-                                <MenuItem value="high">High</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid size={{xs:12, sm: 12 }}>
-                        <FormControl component="fieldset" fullWidth>
-                            <FormLabel>Preferences</FormLabel>
-                            <FormGroup row>
-                                {preferencesOptions.map((option) => (
-                                    <FormControlLabel
-                                        key={option}
-                                        control={
-                                            <Checkbox
-                                                checked={form.preferences.includes(option)}
-                                                onChange={(e) => handleCheckboxChange(e, option)}
-                                            />
-                                        }
-                                        label={option}
-                                        sx={{ color: "secondary.main" }}
-                                    />
-                                ) )}
-                            </FormGroup>
-                        </FormControl>
-                    </Grid>
-                    <Grid size={{xs:12, sm: 12 }}>
-                        <TextField
-                            label="Additional Request"
-                            multiline
-                            rows={3}
-                            name="additionalRequest"
-                            fullWidth
-                            value={form.additionalRequest}
-                            onChange={handleChange}
-                        />
-                    </Grid>
-                    <Grid size={{ xs: 12 }} display="flex" justifyContent="center">
-                        <Button  variant="contained" color="primary" type="submit">
-                            Generate Itinerary
-                        </Button>
-                    </Grid>
-                </Grid>
-            </Box>
-        </Container>
+                </Box>
+            </Container>
+            <ProgressDialog open={loading} steps={typingSteps} />
+        </>
     )
 }

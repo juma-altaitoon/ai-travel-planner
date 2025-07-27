@@ -6,17 +6,17 @@ import Chat from './Chat';
 
 export default function Planner () {
     const location = useLocation();
-    const { itinerary, sessionId } = location.state || {};
+    const { itinerary, chatId } = location.state || {};
 
 
     return (
         <Container>
             <Grid container sx={{ m:1 }} >
-                <Grid size={{xs: 12, md: 6}} sx={{ border: "1px solid" }}> 
+                <Grid size={{xs: 12, md: 6}} sx={{ border: "1px solid", flexGrow: 1, overflowY: "auto" }}> 
                     <GeneratedItinerary itinerary={itinerary} />
                 </Grid>
                 <Grid size={{xs: 12, md: 6}} my={2}>
-                    <Chat sessionId={sessionId} />
+                    <Chat chatId={chatId} />
                 </Grid>
             </Grid>
         </Container>

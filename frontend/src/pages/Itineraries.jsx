@@ -50,7 +50,7 @@ export default function Itineraries() {
         ?
           <CircularProgress/>
         :
-        <Container maxWidth="md" sx={{ my: 4, pb: 4, bgcolor: "background.paper", borderRadius: 16, display: "flex", flexDirection: "column", justifyContent: 'center' }}>
+        <Container maxWidth="md" sx={{ position: "relative", my: 4, pb: 4, bgcolor: "background.paper", borderRadius: 16, display: "flex", flexDirection: "column", justifyContent: 'space-evenly', alignItems: "center", minHeight: "60vh"  }}>
             <Typography variant='h5' fontWeight={"bold"} textAlign="center" color='primary.main' sx={{ my: 4 }}>
                 Your Saved Itineraries
             </Typography>
@@ -73,64 +73,16 @@ export default function Itineraries() {
             :
             <>
                 <Typography variant='h6' color='secondary.dark' textAlign="center"> You Don't have any Itineraries! </Typography>
-                <Button variant='contained' color='primary' size='medium' >Let's generate one</Button>
+                <Button variant='contained' color='primary' size='medium' sx={{ maxWidth: "200px", borderRadius: 5}} >Let's generate one</Button>
             </>
             }
+            <Link to="/itinerary/form">
+              <Fab size="large" color="warning" aria-label='add itinerary' sx={{ position: "absolute", right: 15, bottom: 15}} >
+                <AddIcon/>
+              </Fab>
+            </Link>
         </Container>
       }
-        <Link to="/itinerary/form">
-          <Fab size="large" color="warning" aria-label='add itinerary' sx={{ position: "absolute", right: 15, bottom: 15}} >
-            <AddIcon/>
-          </Fab>
-        </Link>
       </>
     )
 }
-
-// const sampleItineraries = [  
-// {
-//     title: 'Kyoto, Japan · Aug 1–5',
-//     subtitle: 'Find serenity in temples and taste heaven in ramen.',
-//     imageUrl: ''
-//   },
-//   {
-//     title: 'Rome, Italy · Sep 10–15',
-//     subtitle: 'Gelato, gladiators, and ancient ruins—your Roman adventure awaits.',
-//     imageUrl: ''
-//   },
-//   {
-//     title: 'Marrakech, Morocco · Oct 3–6',
-//     subtitle: 'Markets, mosaics, and Moroccan mint tea under desert skies.',
-//     imageUrl: ''
-//   },
-//   {
-//     title: 'Reykjavík, Iceland · Nov 1–4',
-//     subtitle: 'Chase northern lights and soak in volcanic springs.',
-//     imageUrl: ''
-//   },
-//   {
-//     title: 'Barcelona, Spain · Dec 18–22',
-//     subtitle: 'Tapas trails and Gaudí architecture meet beachfront bliss.',
-//     imageUrl: ''
-//   },
-//   {
-//     title: 'Bali, Indonesia · Jan 10–16',
-//     subtitle: 'Rice terraces, sunset temples, and ocean retreats await.',
-//     imageUrl: ''
-//   },
-//   {
-//     title: 'Paris, France · Feb 5–9',
-//     subtitle: 'Croissants and cobblestones—fall in love with every step.',
-//     imageUrl: ''
-//   },
-//   {
-//     title: 'Queenstown, New Zealand · Mar 20–25',
-//     subtitle: 'Bungee jumps, glacial lakes, and adrenaline-fueled escapes.',
-//     imageUrl: ''
-//   },
-//   {
-//     title: 'Cusco, Peru · Apr 7–12',
-//     subtitle: 'Explore Incan heritage en route to Machu Picchu’s magic.',
-//     imageUrl: ''
-//   }
-// ];

@@ -51,13 +51,17 @@ const itinerarySchema = new mongoose.Schema({
         ref: "User",
         required: true,
     },
+    chat: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Chat",
+        required: true,
+    },
     country: {
         type: String,
         required: true,
     },
     city: {
         type: String,
-        required: true,
     },
     startDate: {
         type: Date,

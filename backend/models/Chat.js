@@ -11,7 +11,7 @@ const messageSchema = new mongoose.Schema({
         type: String,
         required: true
     }
-}, { timestamps: true, _id: false });
+}, { _id: false });
 
 const chatSchema = new mongoose.Schema({
     sessionId: {
@@ -30,10 +30,11 @@ const chatSchema = new mongoose.Schema({
         default: [],
     },
     itinerary: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Itinerary",
+        type: Boolean,
+        required: true,
+        default: true,
     },
-})
+}, { timestamps: true })
 
 const Chat = mongoose.model("Chat", chatSchema);
 export default Chat;

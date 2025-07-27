@@ -8,8 +8,8 @@ const chatRouter = express.Router();
 chatRouter.get("/create", authenticate, chat.createChat);
 chatRouter.post("/itinerary", authenticate, chat.createItineraryChat);
 chatRouter.post("/id", authenticate, chat.getChat);
-chatRouter.post("/itinerary-chat", authenticate, chat.getItineraryChat);
-chatRouter.get("/list", authenticate, chat.getChatList);
+chatRouter.post("/itineraryId", authenticate, chat.getItineraryChatId);
+chatRouter.get("/chatId", authenticate, chat.getGeneralChatId);
 chatRouter.post("/send", authenticate, chat.postMessage);
 chatRouter.delete("delete", authenticate, chat.deleteChat);
 

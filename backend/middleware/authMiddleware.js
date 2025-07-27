@@ -7,7 +7,6 @@ dotenv.config();
 // Check user authentication (valid JWT)
 export const authenticate = async (req, res, next) => {
     const token = req.cookies.jwt;
-
     if (!token) {
         return res.status(401).json({ message: "Unauthorized access." });
     }

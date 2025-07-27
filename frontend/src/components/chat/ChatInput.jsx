@@ -15,10 +15,11 @@ export default function ChatInput ({ sendMessage }) {
     };
 
     return (
-        <Box display={"flex"} alignItems={"center"} p={2} m={2} sx={{ border: "2px solid", borderRadius: 5 }}>
+        <Box display={"flex"} alignItems={"center"} p={2} m={2} sx={{ border: "1px solid", borderRadius: 5, borderColor: "secondary.dark" }}>
             <TextField 
                 fullWidth
                 multiline
+                variant="standard"
                 minRows={1}
                 maxRows={5}
                 onChange={(e) => setContent(e.target.value)}

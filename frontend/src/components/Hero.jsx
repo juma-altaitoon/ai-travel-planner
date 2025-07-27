@@ -1,8 +1,39 @@
 import { Box, Button, Typography } from "@mui/material";
 import { Link } from "react-router";
+import { TypeAnimation } from "react-type-animation";
+
+const cities = [
+    "Paris",
+    "London",
+    "New York",
+    "Tokyo",
+    "Barcelona",
+    "Rome",
+    "Dubai",
+    "Istanbul",
+    "Singapore",
+    "Bangkok",
+    "Hong Kong",
+    "Los Angeles",
+    "Amsterdam",
+    "San Francisco",
+    "Sydney",
+    "Cape Town",
+    "Rio de Janeiro",
+    "Mumbai",
+    "Mexico City",
+    "Cairo",
+    "Manama"
+];
+
+const typingSequence = cities.map(city => (
+    [ city, 2000 ]
+)).flat();
+
+
 
 export default function Hero () {
-    
+
     return (
         <Box sx={{ 
             position: "relative", 
@@ -13,9 +44,12 @@ export default function Hero () {
             textAlign: "center",
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
+            justifyContent: "space-evenly",
+            alignItems: "center",
         }}>
-            {/* Hero Image / Video */}
+            <Typography variant="h1" sx={{ fontWeight: 'bold', color:"secondary.dark", zIndex: 1 }}>
+                AI Travel Planner
+            </Typography>
             <video 
                 autoPlay
                 muted
@@ -28,24 +62,30 @@ export default function Hero () {
                     width: "100%",
                     height: "100%",
                     objectFit: "cover",
-                    opacity: 0.35
+                    opacity: 0.9
                     }}
             >
                 <source src="/hero_section.mp4" type="video/mp4"/>
             </video>
             
-            <Typography variant="h1" sx={{ fontWeight: 'bold', color:"secondary.dark" }}>
-                AI Travel Planner
-            </Typography>
-            <Typography variant="h6" sx={{ m: 2, fontWeight:"bold"}}>
+            
+            <Typography variant="h5" sx={{ m: 2, fontWeight:"bold", zIndex: 1, color: "primary.main"}}>
                 BUILD & PLAN your personalized Itinerary in seconds.
             </Typography>
-            <Typography variant="Subtitle2" sx={{ m: 2, fontWeight:"bold", color: "primary.dark" }}>
-                Destinations, activities and experiences tailored for you.
+            <Typography variant="h3" sx={{ m: 2, fontWeight:"bold", color: "blue", zIndex: 1, bgcolor: "grey", opacity: 0.7, maxWidth: "500px" }}>
+                Explore&nbsp;
+                <TypeAnimation
+                    sequence={typingSequence}
+                    wrapper="span"
+                    cursor={true}
+                    repeat={Infinity}
+                    style={{ fontWeight: "bold" }}
+                />
+
             </Typography>
             <Link to="/itinerary/form">
-                <Button variant="contained" size="large" sx={{ maxWidth:"50%", m:"auto" }}>
-                    Generate My Itinerary
+                <Button variant="contained" size="large" sx={{ maxWidth:"50%", mx:"auto", my: 2, borderRadius: 10 }}>
+                    Generate Your Itinerary
                 </Button>
             </Link>
         </Box>

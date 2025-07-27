@@ -6,28 +6,33 @@ import Axios from 'axios';
 
 const BACKEND_URL = import.meta.env.VITE_API_URL;
 
-const create = async() => {
-    try {
-        const response = await Axios.get(BACKEND_URL+"/chat/create", { withCredentials: true })
-        return response.data.sessionId;    
-    } catch (error) {
-        console.error("Error creating chat session: ", error)    
-    }  
-}
+// const create = async() => {
+//     try {
+//         const response = await Axios.get(BACKEND_URL+"/chat/create", { withCredentials: true })
+//         return response.data.sessionId;    
+//     } catch (error) {
+//         console.error("Error creating chat session: ", error)    
+//     }  
+// }
 
-const getChat = async (sessionId) => {
+const getChat = async (chatId) => {
     try {
-        console.log({sessionId})
-        const response = await Axios.post(BACKEND_URL+"/chat/id", { sessionId } ,{ withCredentials: true });
-        return response.data.session.messages;  
+        if (chatId) {
+            console.log(chatId)
+            const response = await Axios.post(BACKEND_URL+"/chat/id", {chatId} ,{ withCredentials: true });
+            console.log("chat messages: ", response.data.history)
+            return response.data.history;
+        }
     } catch (error) {
-        console.error("Error fetching chat session: ", error);    
+        console.error("Error fetching chat session: ", error);  
+        return null  
     }
 } 
 
-const send = async(sessionId, content) => {
+const send = async(chatId, content) => {
     try {
-        const response = await Axios.post(BACKEND_URL+"/chat/send", {  sessionId: sessionId, prompt: content }, { withCredentials: true });
+        console.log(chatId, content);
+        const response = await Axios.post(BACKEND_URL+"/chat/send", {  chatId, prompt: content }, { withCredentials: true });
         console.log(response.data);
         return response.data.reply;    
     } catch (error) {
@@ -37,11 +42,10 @@ const send = async(sessionId, content) => {
 
 
 
-export default function Chat ({sessionId : propSessionId }) {
+export default function Chat ({ chatId }) {
     const [ messages, setMessages ] = useState([]);
     const [ isTyping, setIsTyping ] = useState(false);
-    const [ sessionId, setSessionId ] = useState( propSessionId || null);
-    // const [ localSessionId, setLocalSessionId ] = useState(null);
+
     const bottomRef = useRef(null);
 
     const scrollBottom = () => {
@@ -49,39 +53,38 @@ export default function Chat ({sessionId : propSessionId }) {
 }
 
     useEffect( () => {
-        const initiateChat = async () => {
+        const loadChat = async () => {
             try {
-                let id = propSessionId
-                if (!id) {
-                    id = await create(); 
+                if (chatId) {
+                    console.log(chatId)
+                    const conv = await getChat(chatId) || [];
+                    setMessages(conv);
                 }
-                setSessionId(id);
-
-                const conv = await getChat(id);
-                setMessages(conv);
             } catch (error) {
                 console.error("Chat initiation error", error);
+                setMessages([]);
             }
         };
-        initiateChat();
-    }, [propSessionId])
+        loadChat();
+    }, [chatId])
 
     useEffect(() => {
-        scrollBottom();
+        setTimeout(() => {
+            scrollBottom();
+        }, 1000); 
     }, [messages])
 
 
     const sendMessage = async (content) => {
-        if (!content.trim() || !sessionId){
+        if (!content.trim() || !chatId){
             return;
         }
-
-        setMessages(prev => [...prev, { role: "user", content: content }] );
+        console.log(messages)
+        setMessages(prev => [...prev, { role: "user", content }] );
         setIsTyping(true);
-
+        console.log(chatId)
         try {
-            const response = await send(sessionId, content)
-            
+            const response = await send(chatId, content)
             setMessages( prev => [...prev, { role: "assistant", content: response }])
         } catch (error) {
             console.error("Chat error: ", error)
@@ -92,8 +95,8 @@ export default function Chat ({sessionId : propSessionId }) {
     };
 
     return (
-        <Box sx={{ display: "flex", flexDirection:"column", bgcolor: "background.paper" }}>
-            <Box sx={{ flex: 1, p: 1, m: 1, border: "3px solid", borderRadius: 5, borderColor: "secondary.light", boxShadow:"0 0px 10px 10px white", maxHeight: "60%" }}  >
+        <Box sx={{ display: "flex", flexDirection:"column", justifyContent: "center", bgcolor: "background.paper", borderRadius: 5, maxHeight: "90vh", minHeight: "80vh" }}>
+            <Box sx={{ flex:0.8, p: 1, m: 1, border: "2px solid", borderRadius: 5, borderColor: "secondary.light", boxShadow:"0 0px 10px 10px green", maxHeight: "90%" }}  >
                 <ChatWindow messages={messages} isTyping={isTyping}/>
                 <div ref={bottomRef} />
             </Box>

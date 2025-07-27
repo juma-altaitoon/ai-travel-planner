@@ -124,7 +124,7 @@ export default function GeneratedItinerary({ itinerary }) {
                                         Preferences: 
                                     </Typography>
                                     {itinerary.preferences.map((preference) => (
-                                        <Chip key={preference} label={preference} size="small" color='primary'/>
+                                        <Chip key={preference} label={preference} size="small" color='primary' sx={{ m:1 }} />
                                     ))}
                                     <Chip label={`Budget: ${itinerary.budget}`} size="small" color='secondary' />
                                 </CardContent>

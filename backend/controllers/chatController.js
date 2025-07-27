@@ -1,4 +1,5 @@
 import Chat from "../models/Chat.js";
+import Itinerary from "../models/Itinerary.js";
 import OpenAI from "openai";
 import dotenv from 'dotenv';
 
@@ -16,40 +17,36 @@ export const createChat = async (req, res) => {
         const user = req.user;
                 
         const systemMessage = 
-        `You are an expert travel advisor helping users plan personalized trips.
-        Your goal is to suggest day-by-day activities, places to visit, and travel tips based on a user's input.            
-        Personalize your advice and answer user questions clearly and accurately
-        `
+            `You are an expert travel advisor helping users plan personalized trips.
+            Your goal is to suggest day-by-day activities, places to visit, and travel tips based on a user's input.            
+            Personalize your advice and answer user questions clearly and accurately`
         const chatMessage = { role: "system", content: systemMessage };
-        const chat = await Chat.create({ messages: [ chatMessage ], user: user });
+        const chat = await Chat.create({ messages: [ chatMessage ], user: user, itinerary: false });
         console.log(chat)
 
-        return res.status(201).json({ message :"Chat created." , sessionId: chat.sessionId });
+        return res.status(201).json({ message :"Chat created." , chatId: chat.id });
     } catch (error) {
         console.error( "Error creating chat", error.message );
         return res.status(500).json({ message: "Error creating chat", error: error.message });
     }
-
 }
 
 export const createItineraryChat = async (req, res) => {
     try {
         const user = req.user;
         const itinerary = req.body;
-        
-        const systemMessage = `
-            You are an expert travel advisor helping users plan personalized trips.
+        console.log("Itinerary: ", itinerary)
+        const systemMessage = 
+            `You are an expert travel advisor helping users plan personalized trips.
             Your goal is to suggest day-by-day activities, places to visit, and travel tips based on their itinerary.
             Here is the user's generated itinerary in JSON:
-            ${itinerary}
-                        
-            Use this context to personalize your advice and answer user questions clearly and accurately
-        `
+            ${JSON.stringify(itinerary)}
+            Use this context to personalize your advice and answer user questions clearly and accurately.`
         const chatMessage = { role: "system", content: systemMessage };
         
-        const chat = await Chat.create({ messages: [ chatMessage ], user: user, itinerary: itinerary._id });
-        
-        return res.status(201).json({ message :"Chat created." , sessionId: chat.sessionId });
+        const chat = await Chat.create({ messages: [ chatMessage ], user: user });
+        console.log("chat.id: ", chat.id )
+        return res.status(201).json({ message :"Chat created." , chatId: chat.id });
     } catch (error) {
         console.error( "Error creating chat", error.message );
         return res.status(500).json({ message: "Error creating chat", error: error.message });
@@ -57,15 +54,15 @@ export const createItineraryChat = async (req, res) => {
 
 }
 
-export const getChatList = async (req, res) => {
-    const userId = req.body;
+export const getGeneralChatId = async (req, res) => {
+    const userId = req.user;
     try {
-        const chatList = await Chat.find({ userId });
-        if (!chatList){
+        const chat = await Chat.findOne({ user: userId, itinerary: false }).select("id");
+        if (!chat){
             return res.status(404).json({ message: "Chat sessions not found" });
         }
-        console.log(chatList)
-        return res.status(200).json({ message: "Chat sessions found", chatList  });
+        // console.log(chat.id)
+        return res.status(200).json({ message: "Chat sessions found", chatId: chat.id  });
     } catch (error) {
         console.error("Failed to fetch chat list: ", error.message );
         return res.status(500).json({ message: "Failed to fetch chat list: ", error: error.message });
@@ -73,53 +70,57 @@ export const getChatList = async (req, res) => {
 }
 
 export const getChat = async (req, res) => {
-    const { sessionId } = req.body;
+    const { chatId } = req.body;
+    console.log(chatId)
     try {
-        const session = await Chat.findOne({ sessionId, user: req.user });
-        if (!session){
+        const chat = await Chat.findById(chatId);
+        if (!chat){
             return res.status(404).json({ message: "Chat session not found" });
         }
-        return res.status(200).json({ message: "Chat session found", session  });
+        console.log("getChat, chat: ", chat)
+        return res.status(200).json({ message: "Chat session found", history: chat.messages  });
     } catch (error) {
-        console.error("Failed to fetch chat: ", error.message );
-        return res.status(500).json({ message: "Failed to fetch chat: ", error: error.message });
+        console.error("Failed to fetch chat1: ", error.message );
+        return res.status(500).json({ message: "Failed to fetch chat1: ", error: error.message });
     }
 }
 
-export const getItineraryChat = async (req, res) => {
-    const { itineraryId } = req.body;
-    console(typeof(itineraryId))
+export const getItineraryChatId = async (req, res) => {
+    // console.log(req.body)
+    const { itineraryId }  = req.body;
+    console.log({itinerary: itineraryId, user: req.user})
     try {
-        const session = await Chat.findOne({ itinerary: itineraryId, user: req.user });
-        if (!session){
+        const chat = await Itinerary.findById(itineraryId).select("chat");
+
+        if (!chat){
             return res.status(404).json({ message: "Chat session not found" });
         }
-        return res.status(200).json({ message: "Chat session found", sessionId: session.sessionId  });
+        return res.status(200).json({ message: "Chat session found", chatId: chat.chat });
     } catch (error) {
-        console.error("Failed to fetch chat: ", error.message );
-        return res.status(500).json({ message: "Failed to fetch chat: ", error: error.message });
+        console.error("Failed to fetch chat2: ", error );
+        return res.status(500).json({ message: "Failed to fetch chat2: ", error: error });
     }
 }
 
 export const postMessage = async ( req, res) => {
-    const { sessionId, prompt } = req.body;
-    if (!sessionId || !prompt) {
-        return res.status(400).json({message: "Missing prompt and/or sessionId" });
+    const { chatId, prompt } = req.body;
+    if (!chatId || !prompt) {
+        return res.status(400).json({message: "Missing prompt and/or chatId" });
     }
     try {
-        const session = await Chat.findOne({ sessionId, user: req.user });
-        if (!session){
+        const chat = await Chat.findById(chatId);
+        if (!chat){
             return res.status(404).json({ message: "Chat session not found" });
         }
         // update messeges with user's prompt
-        session.messages.push({ role: "user", content: prompt });
+        chat.messages.push({ role: "user", content: prompt });
         // call AI API 
-        console.log("Session : ", session.messages)
+        console.log("Chat Session : ", chat.messages)
 
         const completion = await client.chat.completions.create({
             model: "openai/gpt-4.1-mini",
             // instructions: "You are an experienced helpful travel consultant",
-            messages: session.messages,
+            messages: chat.messages,
             temperature: 0.7,
             max_completion_tokens: 150,
         })
@@ -127,9 +128,9 @@ export const postMessage = async ( req, res) => {
         const response = completion.choices[0]?.message?.content.trim();       
         
         // update messages with AI's reponse
-        session.messages.push({ role: "assistant", content: response })
+        chat.messages.push({ role: "assistant", content: response })
 
-        await session.save();
+        await chat.save();
         return res.status(200).json({ reply: response })
     } catch (error) {
         console.error("Failed to process message ", error.message );
@@ -156,4 +157,4 @@ export const deleteChat = async (req, res) => {
 }
 
 
-export default {createChat, createItineraryChat, getChat, getItineraryChat, getChatList, postMessage, deleteChat};
+export default {createChat, createItineraryChat, getChat, getItineraryChatId, getGeneralChatId, postMessage, deleteChat};

@@ -7,7 +7,7 @@ export default function MessageContainer ({role, content}){
     return (
         <Box display={"flex"} justifyContent={isUser ? "flex-end" : "flex-start"} m={1}>
             <Paper elevation={3} sx={{ maxWidth: "70%", p: 1, bgcolor: (isUser ? "secondary.dark" : "primary.dark"), borderRadius: 3}} >
-                <Typography variant="body1" whiteSpace="pre-line" >
+                <Typography variant="body1" whiteSpace="pre-line" color="White" >
                     {content}
                 </Typography>
             </Paper>

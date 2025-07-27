@@ -86,7 +86,7 @@ export default function ItineraryDetailsView({ tripId }) {
 
     return(
         <>
-            <Container maxWidth="md" sx={{ my: 5 }}>
+            <Container maxWidth="md"  justifyContent={"center"} sx={{ my: 5 }}>
                 <Card 
                     sx={{ 
                         borderRadius: 5,
@@ -139,7 +139,7 @@ export default function ItineraryDetailsView({ tripId }) {
                                     Preferences: 
                                 </Typography>
                                 {itinerary.preferences.map((preference) => (
-                                    <Chip key={preference} label={preference} size="small" color='primary'/>
+                                    <Chip key={preference} label={preference} size="small" color='primary'sx={{ m:0.5 }}/>
                                 ))}
                                 <Chip label={`Budget: ${itinerary.budget}`} size="small" color='secondary' />
                             </CardContent>

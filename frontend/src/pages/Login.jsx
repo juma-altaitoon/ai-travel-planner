@@ -7,7 +7,6 @@ import {
     Button,
     Avatar,
     FormControlLabel,
-    Link as MuiLink,
     IconButton,
     InputAdornment
 } from '@mui/material';
@@ -17,7 +16,8 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import AuthContext from '../context/AuthContext';
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, Link } from 'react-router';
+
 
 export default function Login () {
     const [ userLogin, setUserLogin ] = useState({})
@@ -62,7 +62,8 @@ export default function Login () {
             console.log(userLogin);
             await login(userLogin);
             console.log(message);
-            navigate("/itinerary")
+            // navigate("/itinerary", { replace: true })
+            navigate("/welcome", { replace: true })
         } catch (error) {
             console.error(error.message);
             setErrors({ form: "Login failed. Please check your credentials."});
@@ -145,10 +146,6 @@ export default function Login () {
                             {errors.form}
                         </Typography>
                     )}
-                    <FormControlLabel
-                        control={<Checkbox value='remember' color='secondary' />} 
-                        label='Remember me'
-                    />
                     <Button
                         type='submit'
                         fullWidth
@@ -160,10 +157,14 @@ export default function Login () {
                     </Button>
                     <Grid container >
                         <Grid size={{ xs: 6}}>
-                            <MuiLink href='/forgot-password' >Forgot password</MuiLink>
+                            <Link style={{ textDecoration: 'none'}} to='/forgot-password' >
+                                <Typography color='secondary.main'>Forgot password</Typography>
+                            </Link>
                         </Grid>
                         <Grid >
-                            <MuiLink href="/signup" >{"Don't have an account? Sign up."}</MuiLink>
+                            <Link style={{ textDecoration: 'none'}} to="/signup" >
+                                <Typography color='secondary.main'>Don't have an account? Sign up.</Typography>
+                            </Link>
                         </Grid>
                     </Grid>
                 </Box>
