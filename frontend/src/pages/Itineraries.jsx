@@ -59,12 +59,12 @@ export default function Itineraries() {
                 <Grid container spacing={4} >
                     {itineraryList.map((trip, index) =>(
                         console.log(),
-                        <Grid size={{ xs: 6, sm: 4, md: 3}} key={index}>
+                        <Grid size={{ xs: 6, sm: 4}} key={index}>
                             <ItineraryCard
                                 tripId={trip._id}
                                 title={`${trip.city}, ${trip.country} : ${formatDate(trip.startDate)} - ${formatDate(trip.endDate)}`}
                                 subtitle={trip.friendlyOneLiner || trip.summary}
-                                imageUrl={trip.imageUrl}
+                                imageUrl={trip.image.url}
                                 onView={() => console.log("Viewing, ", `${trip.city}, ${trip.country}` )}
                             />
                         </Grid>

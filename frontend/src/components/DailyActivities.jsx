@@ -1,5 +1,5 @@
 import { Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineOppositeContent, TimelineSeparator, } from "@mui/lab";
-import { Card, CardContent, Typography, Box, Stack, Chip, IconButton, Divider, Alert, CardHeader } from "@mui/material";
+import { Card, CardContent, Typography, Box, Stack, Chip, IconButton, Divider, Alert, CardHeader, CardMedia } from "@mui/material";
 import LinkIcon from '@mui/icons-material/Link';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import { timelineItemClasses } from '@mui/lab/TimelineItem';
@@ -46,6 +46,19 @@ export default function DailyActivities({ dayActivities }) {
                                     }
                                 }} 
                             >
+                                <CardMedia 
+                                    component="img"
+                                    height={150}
+                                    loading="lazy"
+                                    src={dayActivities[key].locationImg.url || "image_placeholder.png"}
+                                    sx={{ 
+                                        width: "100%",
+                                        height: "100%",
+                                        borderRadius: 5,
+                                        boxShadow: 2,
+                                        objectFit: "contain"
+                                    }}
+                                />
                                 <CardHeader title={label+" : "} />
                                 <CardContent>
                                     <Typography variant="h6">{dayActivities[key].activity}</Typography>

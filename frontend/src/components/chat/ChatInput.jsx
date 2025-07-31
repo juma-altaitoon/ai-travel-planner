@@ -21,7 +21,8 @@ export default function ChatInput ({ sendMessage }) {
                 multiline
                 variant="standard"
                 minRows={1}
-                maxRows={5}
+                maxRows={4}
+                value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="Enter you prompt here..."
             />

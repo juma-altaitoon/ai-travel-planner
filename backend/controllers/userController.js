@@ -1,4 +1,10 @@
 import User from '../models/User.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Protected fields to exclude from user profile
 const protectedFields = ["-password", "-role", "-resetToken", "-resetTokenExpiry", "-__v"]
@@ -18,29 +24,40 @@ export const getProfile = async (req, res) => {
 export const updateProfile = async (req, res) => {
     try {
         const userId = req.user;
+        const avatar = req.file ? `uploads/avatars/${req.file.filename}` : null;
         const { 
             username,  
             firstName,
             lastName,
-            yearOfBirth,
+            dateOfBirth,
             country,
-            avatar,
         } = req.body;
     
-
+        const user = await User.findById(userId).select("avatar");
+        console.log("user: ", user);
+        const oldAvatar = user.avatar;
+        
         const updateUser = await User.findByIdAndUpdate(
             userId, 
             {
                 username,  
                 firstName,
                 lastName,
-                yearOfBirth,
+                dateOfBirth,
                 country,
                 avatar,
             }
         ).select(protectedFields)
         if (!updateUser) {
             return res.status(404).json({ message: "Profile update failed." });
+        }
+        if (avatar && oldAvatar){
+            const fullPath = path.join(__dirname, oldAvatar);
+            fs.unlink(fullPath, (error) => {
+                if (error) {
+                    console.error("Failed to delete old avatar: ", oldAvatar, ". Error: ", error);
+                }
+            });
         }
         return res.status(200).json({ message: "Profile update successful.", user: updateUser })
         

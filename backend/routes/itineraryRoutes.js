@@ -10,7 +10,7 @@ itineraryRouter.post('/id', authenticate, itinerary.getItineraryById);
 itineraryRouter.get('/test', itinerary.generateTest);
 itineraryRouter.post('/generate', authenticate, itinerary.generateItinerary);
 itineraryRouter.post('/save', authenticate, itinerary.saveItinerary);
-itineraryRouter.delete('/delete', authenticate, itinerary.deleteItinerary);
+itineraryRouter.post('/delete', authenticate, itinerary.deleteItinerary);
 
 
 export default itineraryRouter;

@@ -50,20 +50,19 @@ export const AuthProvider = ({ children }) => {
     
     // Signup function
     const signup = async (userData) => {
-        await Axios.post(BACKEND_URL+"/auth/signup", userData)
-            .then((response) => {
-                console.log(response.data);
-                showSnackbar("Signup Successful.", "success");
-                // Snackbar goes here
-                setTimeout(() => {
-                    navigate("/login", {replace: true});    
-                }, 2000);
-            })
-            .catch((error) => {
-                console.error( "Signup Failed: ", error.message );
-                showSnackbar("Signup Failed! Please try again later.", "error");
-                // Snackbar goes here
-            })
+        try {
+            const response = await Axios.post(BACKEND_URL+"/auth/signup", userData)
+            console.log(response.data);
+            showSnackbar("Signup Successful.", "success");
+            // Snackbar goes here
+            setTimeout(() => {
+                navigate("/login", {replace: true});    
+            }, 2000);
+        } catch (error) {
+            console.error( "Signup Failed: ", error.message );
+            showSnackbar("Signup Failed! Please try again later.", "error");
+            // Snackbar goes here
+        }
     }
     
     // Login function
@@ -110,8 +109,8 @@ export const AuthProvider = ({ children }) => {
             })
     }
 
-    const passwordReset = async ({ token, password }) => {
-        await Axios.post(BACKEND_URL+"/auth/password-reset",{ token, password }, {withCredentials: true})
+    const passwordReset = async (resetData) => {
+        await Axios.post(BACKEND_URL+"/auth/reset-password", resetData , {withCredentials: true})
             .then((response) => {
                 console.log("Successful password reset", response.data);
                 showSnackbar("Password reset successful", "success");

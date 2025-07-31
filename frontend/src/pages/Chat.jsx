@@ -1,19 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Container } from '@mui/material';
 import ChatWindow from "../components/chat/ChatWindow";
 import ChatInput from "../components/chat/ChatInput";
 import Axios from 'axios';
 
 const BACKEND_URL = import.meta.env.VITE_API_URL;
-
-// const create = async() => {
-//     try {
-//         const response = await Axios.get(BACKEND_URL+"/chat/create", { withCredentials: true })
-//         return response.data.sessionId;    
-//     } catch (error) {
-//         console.error("Error creating chat session: ", error)    
-//     }  
-// }
 
 const getChat = async (chatId) => {
     try {
@@ -46,12 +37,6 @@ export default function Chat ({ chatId }) {
     const [ messages, setMessages ] = useState([]);
     const [ isTyping, setIsTyping ] = useState(false);
 
-    const bottomRef = useRef(null);
-
-    const scrollBottom = () => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-}
-
     useEffect( () => {
         const loadChat = async () => {
             try {
@@ -67,13 +52,6 @@ export default function Chat ({ chatId }) {
         };
         loadChat();
     }, [chatId])
-
-    useEffect(() => {
-        setTimeout(() => {
-            scrollBottom();
-        }, 1000); 
-    }, [messages])
-
 
     const sendMessage = async (content) => {
         if (!content.trim() || !chatId){
@@ -95,10 +73,10 @@ export default function Chat ({ chatId }) {
     };
 
     return (
-        <Box sx={{ display: "flex", flexDirection:"column", justifyContent: "center", bgcolor: "background.paper", borderRadius: 5, maxHeight: "90vh", minHeight: "80vh" }}>
-            <Box sx={{ flex:0.8, p: 1, m: 1, border: "2px solid", borderRadius: 5, borderColor: "secondary.light", boxShadow:"0 0px 10px 10px green", maxHeight: "90%" }}  >
+        <Box sx={{ display: "flex", flexDirection:"column", justifyContent: "center", bgcolor: "background.paper", borderRadius: 5, height: "80%" }}>
+            <Box sx={{ flex:0.7, p: 1, m: 1, border: "2px solid", borderRadius: 5, borderColor: "secondary.light", boxShadow:"0 0px 10px 10px green", maxHeight: "80%" }}  >
                 <ChatWindow messages={messages} isTyping={isTyping}/>
-                <div ref={bottomRef} />
+
             </Box>
             <Box>
                 <ChatInput sendMessage={sendMessage}/>

@@ -139,7 +139,7 @@ export const postMessage = async ( req, res) => {
 }
 
 export const deleteChat = async (req, res) => {
-    const chatId = req.body;
+    const { chatId } = req.body;
     
     try {
         await Chat.findByIdAndDelete( chatId )

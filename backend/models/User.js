@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema({
         maxlength: 50,
         
     },
-    yearOfBirth: {
+    dateOfBirth: {
         type: Date,
     },
     country: {
@@ -53,7 +53,7 @@ const userSchema = new mongoose.Schema({
     avatar: {
         type: String,
         trim: true,
-        default: " ",
+        default: null,
     },
     role: {
         type: String,

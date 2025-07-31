@@ -45,7 +45,7 @@ export default function ChatPage () {
     }
     if (!chatOpen) { 
         return (
-                <Container sx={{height: "80vh", justifyItems:"center"}}>
+                <Container sx={{height: "80vh", justifyItems:"center", bgcolor: "background.paper"}}>
                     <Box m={10}>
                         <Typography variant="h4" color="secondary" >Chat Page</Typography>
                     </Box>
@@ -59,7 +59,9 @@ export default function ChatPage () {
         )
     } else {
         return (
-            <Chat chatId={chatId}/>
+            <Container maxWidth="md" sx={{ height: "100%", my: 2, }}>
+                <Chat chatId={chatId} />
+            </Container>
         )
     }
 }

@@ -6,6 +6,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { TabPanel, a11yProps } from './TabPanel';
 import DailyActivities from './DailyActivities';
 import Axios from 'axios';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const BACKEND_URL = import.meta.env.VITE_API_URL;
 
@@ -20,7 +21,7 @@ const getItineraryById = async (id) => {
     }
 }
 
-export default function ItineraryDetailsView({ tripId }) {
+export default function ItineraryDetailsView({ tripId, openDialog }) {
     const [ expand, setExpand ] = useState(false);
     const [ tabIndex, setTabIndex ] = useState(0);
     const [ itinerary, setItinerary ] = useState( null);
@@ -86,7 +87,7 @@ export default function ItineraryDetailsView({ tripId }) {
 
     return(
         <>
-            <Container maxWidth="md"  justifyContent={"center"} sx={{ my: 5 }}>
+            <Container maxWidth="md"  justifyContent={"center"} sx={{ my: 2 }}>
                 <Card 
                     sx={{ 
                         borderRadius: 5,
@@ -117,7 +118,7 @@ export default function ItineraryDetailsView({ tripId }) {
                             <CardMedia 
                                 component="img"
                                 height={200}
-                                src='/vite.svg' 
+                                src={itinerary.image.url || "image_placeholder.png"} 
                                 sx={{ 
                                     width: "100%",
                                     borderRadius: 5,
@@ -155,13 +156,17 @@ export default function ItineraryDetailsView({ tripId }) {
                             </CardContent> 
                         </Grid>                     
                     </Grid>
-                    <CardActions >
-                        <Button aria-label='expand itinerary' onClick={handleExpand} aria-expanded={expand}>
+                    <CardActions sx={{ justifyContent: "space-between"}}>
+                        <Button variant={expand ? "contained" : "outlined"} aria-label='expand itinerary' color='info' onClick={handleExpand} aria-expanded={expand}>
                             Daily Schedule 
                             { expand 
                                 ? <ExpandLessIcon/>
                                 :<ExpandMoreIcon/> 
                             }
+                        </Button>
+                        <Button variant='contained' color='error' onClick={openDialog}>
+                            <DeleteIcon />
+                            {/* Delete */}
                         </Button>
                     </CardActions>
                 </Card>

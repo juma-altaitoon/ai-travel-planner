@@ -72,7 +72,7 @@ export default function Hero () {
             <Typography variant="h5" sx={{ m: 2, fontWeight:"bold", zIndex: 1, color: "primary.main"}}>
                 BUILD & PLAN your personalized Itinerary in seconds.
             </Typography>
-            <Typography variant="h3" sx={{ m: 2, fontWeight:"bold", color: "blue", zIndex: 1, bgcolor: "grey", opacity: 0.7, maxWidth: "500px" }}>
+            <Typography variant="h4" sx={{ m: 2, fontWeight:"bold", color: "blue", zIndex: 1, bgcolor: "lightgrey", opacity: 0.6, maxWidth: "md", borderRadius: 4 }}>
                 Explore&nbsp;
                 <TypeAnimation
                     sequence={typingSequence}
@@ -81,7 +81,6 @@ export default function Hero () {
                     repeat={Infinity}
                     style={{ fontWeight: "bold" }}
                 />
-
             </Typography>
             <Link to="/itinerary/form">
                 <Button variant="contained" size="large" sx={{ maxWidth:"50%", mx:"auto", my: 2, borderRadius: 10 }}>

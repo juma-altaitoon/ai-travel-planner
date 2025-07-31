@@ -17,7 +17,7 @@ import { useState, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
 export default function PasswordReset () {
-    const { passwordReset, message } = useContext(AuthContext);
+    const { passwordReset } = useContext(AuthContext);
     const [ showPassword, setShowPassword ] = useState(false);
     const [ showConfirmPassword, setShowConfirmPassword ] = useState(false);
     const [ resetData, setResetData ] = useState({});
@@ -32,14 +32,14 @@ export default function PasswordReset () {
         if (!resetToken) {
             errorMessages.resetToken = "Link Invalid"
         }
-        if (!resetData.password) {
-            errorMessages.password = "Password is required";
-        } else if (resetData.password.length < 12 ) {
-            errorMessages.password = "Password must be at least 12 characters";
-        } else if (!passwordRegex.test(resetData.password)) {
-            errorMessages.password = "Password should contain at least 1 lowercase, 1 uppercase, 1 number and 1 special character";
+        if (!resetData.newPassword) {
+            errorMessages.newPassword = "Password is required";
+        } else if (resetData.newPassword.length < 12 ) {
+            errorMessages.newPassword = "Password must be at least 12 characters";
+        } else if (!passwordRegex.test(resetData.newPassword)) {
+            errorMessages.newPassword = "Password should contain at least 1 lowercase, 1 uppercase, 1 number and 1 special character";
         }
-        if (resetData.password !== resetData.confirmPassword){
+        if (resetData.newPassword !== resetData.confirmPassword){
             errorMessages.confirmPassword = "Passwords do not match";
         }
         return errorMessages;
@@ -72,6 +72,7 @@ export default function PasswordReset () {
         }
         try {
             resetData["resetToken"] = resetToken
+            // console.log(resetData)
             await passwordReset(resetData);
             console.log()
             navigate("/"); 
@@ -82,6 +83,7 @@ export default function PasswordReset () {
     }
 
     return(
+        
         <Container maxWidth='xs'>
             <Box
                 sx={{
@@ -107,8 +109,8 @@ export default function PasswordReset () {
                         required
                         fullWidth
                         id='password'
-                        label='Password'
-                        name='password'
+                        label='New Password'
+                        name='newPassword'
                         onChange={handleChange}
                         type={showPassword ? 'text' : 'password'}
                         slotProps={{

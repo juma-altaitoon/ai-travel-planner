@@ -1,6 +1,9 @@
 import Itinerary from '../models/Itinerary.js';
+import { getUnsplashImageUrl } from '../util/getUnsplashImage.js';
+import { getYoutubeLink } from '../util/getYoutubeLink.js';
 import OpenAI from 'openai';
 import dotenv from 'dotenv';
+
 
 dotenv.config();
 
@@ -82,7 +85,7 @@ export const generateItinerary = async (req, res) => {
     Output Specification:
     - Output must strictly match this structure:
     {
-        "friendlyOneLiner": "String
+        "friendlyOneLiner": "String",
         "country": "String",
         "city": "String"
         "startDate": "YYYY-MM-DD",
@@ -99,7 +102,6 @@ export const generateItinerary = async (req, res) => {
                     "location": "String,
                     "description": "String",
                     "link": "String",
-                    "youtubeLink":"String",
                     "cost": Float,
                 },
                 "afternoon": {
@@ -107,15 +109,13 @@ export const generateItinerary = async (req, res) => {
                     "location": "String,
                     "description": "String",
                     "link": "String",
-                    "youtubeLink":"String",
                     "cost": Float,
                 },
                 "evening": {
                     "activity": "String",
                     "location": "String,
                     "description": "String",
-                    "link": "String",
-                    "youtubeLink":"String",
+                    "link": "String", 
                     "cost": Float,
                 },
                 "transport": [ "String", "String", ... ],
@@ -151,6 +151,20 @@ export const generateItinerary = async (req, res) => {
         if (response?.choices[0]?.message?.content) {
             const itinerary = JSON.parse(response.choices[0].message.content);
             itinerary.user = req.user;
+            itinerary.image = await getUnsplashImageUrl(`${itinerary.country} ${itinerary.city}`)
+            console.log("ITINERARY: ", itinerary.itineraryDays)
+            for (const element of itinerary.itineraryDays){
+                console.log("element.morning: ", element.morning.location)
+                element.morning.locationImg = await getUnsplashImageUrl(`${itinerary.country} ${itinerary.city} ${element.morning.location}`);
+                console.log("location IMG: ", element.morning.locationImg);
+                element.morning.youtubeLink = await getYoutubeLink(`${itinerary.country} ${itinerary.city} ${element.morning.location}`)
+                console.log("Youtube LINK: ", element.morning.youtubeLink);
+                element.afternoon.locationImg = await getUnsplashImageUrl(`${itinerary.country} ${itinerary.city} ${element.afternoon.location}`);
+                element.afternoon.youtubeLink = await getYoutubeLink(`${itinerary.country} ${itinerary.city} ${element.afternoon.location}`);
+                element.evening.locationImg = await getUnsplashImageUrl(`${itinerary.country} ${itinerary.city} ${element.evening.location}`);
+                element.evening.youtubeLink = await getYoutubeLink(`${itinerary.country} ${itinerary.city} ${element.evening.location}`);
+            };
+            
             return res.status(200).json({ message: "Itinerary generated successfully", itinerary });
         }
         return res.status(500).json({ message: "Error generating itinerary."});
@@ -183,8 +197,9 @@ export const saveItinerary = async (req, res) => {
 
 // Delete an itinerary
 export const deleteItinerary = async (req, res) => {
+        console.log("deleteItinerary: ", req.body)
     try {
-        const id = req.body;
+        const { id } = req.body;
         const itinerary = await Itinerary.findByIdAndDelete(id);
         if (itinerary) {
             return res.status(200).json({ message: "Itinerary delete successful."});

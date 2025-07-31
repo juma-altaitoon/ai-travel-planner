@@ -13,6 +13,7 @@ const iDaySchema = new mongoose.Schema({
     morning: { 
         activity: { type: String },
         location: { type: String },
+        locationImg: { type: Object, default: null },
         description: { type: String },
         link: { type: String },
         youtubeLink: { type: String },
@@ -21,6 +22,7 @@ const iDaySchema = new mongoose.Schema({
     afternoon: { 
         activity: { type: String },
         location: { type: String },
+        locationImg: { type: Object, default: null },
         description: { type: String },
         link: { type: String },
         youtubeLink: { type: String },
@@ -29,6 +31,7 @@ const iDaySchema = new mongoose.Schema({
     evening: { 
         activity: { type: String },
         location: { type: String },
+        locationImg: { type: Object, default: null },
         description: { type: String },
         link: { type: String },
         youtubeLink: { type: String },
@@ -94,6 +97,10 @@ const itinerarySchema = new mongoose.Schema({
     friendlyOneLiner: {
         type: String,
         default: ''
+    },
+    image: {
+        type: Object,
+        default: null,
     }
 }, { timestamps: true });
 

@@ -1,5 +1,8 @@
 import User from '../models/User.js';
 import crypto from 'crypto';
+import { sendWelcomeEmail, sendResetPassword } from '../util/sendEmail.js';
+
+const FRONTEND_URL = process.env.FRONTEND_URL;
 
 // Test API
 export const checkAuth = async (req, res) => {
@@ -20,15 +23,18 @@ export const checkAuth = async (req, res) => {
 // Signup 
 export const signup = async (req, res) => {
     try {
+        console.log("req.file", req.file)
+        console.log("req.body: ", req.body);
+        const avatar = req.file ? `uploads/avatars/${req.file.filename}` : null;
+        
         const { 
             username, 
             email, 
             password,
             firstName,
             lastName,
-            yearOfBirth,
+            dateOfBirth,
             country,
-            avatar,
         } = req.body;
 
         // Check if email is already registered
@@ -44,12 +50,14 @@ export const signup = async (req, res) => {
             password,
             firstName,
             lastName,
-            yearOfBirth,
+            dateOfBirth,
             country,
             avatar,
         })
         await user.save()
         .then((savedUser) => {
+            console.log(savedUser.email, savedUser.username);
+            sendWelcomeEmail(savedUser.email, savedUser.username);
             res.status(201).json({ message: "User successfully registered.", savedUser});
         })
         .catch ((error) => {
@@ -113,13 +121,13 @@ export const forgotPassword = async (req, res) => {
     const resetToken = await user.generateResetToken();
     
     await user.save()
-        .then((savedUSer) => {
-            const resetURL = `"{FRONTEND_URL}"/reset/${resetToken}`;
+        .then((savedUser) => {
+            const resetURL = `${FRONTEND_URL}/reset/${resetToken}`;
             // API test
-            return res.status(200).json({ message: "Reset Link sent" , resetURL });
+            console.log(savedUser.email, savedUser.username, resetURL);
+            sendResetPassword(savedUser.email, savedUser.username, resetURL)
+            return res.status(200).json({ message: "Reset Link sent" });
 
-            // Email the reset link
-            // Coming soon...
         })
         .catch((error) => {
             console.error("Error setting reset token: ", error.message);

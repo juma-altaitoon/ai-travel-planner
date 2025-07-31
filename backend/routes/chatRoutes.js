@@ -11,6 +11,6 @@ chatRouter.post("/id", authenticate, chat.getChat);
 chatRouter.post("/itineraryId", authenticate, chat.getItineraryChatId);
 chatRouter.get("/chatId", authenticate, chat.getGeneralChatId);
 chatRouter.post("/send", authenticate, chat.postMessage);
-chatRouter.delete("delete", authenticate, chat.deleteChat);
+chatRouter.post("/delete", authenticate, chat.deleteChat);
 
 export default chatRouter;

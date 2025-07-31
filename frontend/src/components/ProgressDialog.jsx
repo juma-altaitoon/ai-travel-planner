@@ -1,6 +1,6 @@
 import React from "react";
 import { TypeAnimation } from 'react-type-animation';
-import { Dialog, DialogTitle, DialogContent, CircularProgress, Typography, Box } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, CircularProgress, Typography, Box, LinearProgress } from '@mui/material';
 
 export default function ProgressDialog({ open, onCancel, steps=[] }) {
 
@@ -9,9 +9,9 @@ export default function ProgressDialog({ open, onCancel, steps=[] }) {
             <DialogTitle id="itinerary-loading">
                 Generating You Itinerary
             </DialogTitle>            
-            <DialogContent>
+            <DialogContent sx={{ alignItems: "center"}}>
+                <CircularProgress/>
                 <Box sx={{ minWidth: 300, my: 2 }}>
-                    <CircularProgress/>
                     <TypeAnimation
                         sequence={steps}
                         wrapper="div"
@@ -19,7 +19,9 @@ export default function ProgressDialog({ open, onCancel, steps=[] }) {
                         repeat={0}
                         style={{ fontSize: "1rem", lineHeight: 1.5 }}
                     />
+                    
                 </Box>
+                <LinearProgress color="primary"/>
             </DialogContent>
         </Dialog>
     )

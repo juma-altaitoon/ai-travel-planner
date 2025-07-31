@@ -56,9 +56,9 @@ export default function ItineraryForm(){
     
     // Text to be used in the loading animation 
     const typingSteps = [
-        "Analyzing your prefrences...", 1000,
-        "Researching destinations...", 1000,
-        "Finalizing your plan...", 1500,
+        "Analyzing your prefrences...", 500,
+        "Researching destinations...", 500,
+        "Finalizing your plan...", 2000,
     ];
 
     const handleChange = (event) => {
@@ -143,13 +143,13 @@ export default function ItineraryForm(){
                                 label="City / Region"
                                 name="city"
                                 onChange={handleChange}
-                                required
                             />
                         </Grid>
                         <Grid size={{xs:12, sm: 6 }}>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
                                 fullWidth
+                                disablePast
                                 label="Start Date"
                                 required
                                 onChange={(value) => handleDateChange('startDate', value)}
@@ -161,6 +161,7 @@ export default function ItineraryForm(){
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
                                 fullWidth
+                                disablePast
                                 label="End Date"
                                 required
                                 onChange={(value) => handleDateChange('endDate', value)}

@@ -1,16 +1,18 @@
-import { Box, Button, Container, Divider, Grid, Typography, Fab, TextField } from "@mui/material";
+import { Box, Button, Container, Divider, Grid, Typography, Fab, TextField, Avatar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import EditIcon from '@mui/icons-material/Edit';
+import CloudUploadRoundedIcon from '@mui/icons-material/CloudUploadRounded';
+import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import Axios from "axios";
 
 const BACKEND_URL = import.meta.env.VITE_API_URL;
 
 const getProfile = async () => {
     try {
-        const data = await Axios.get(BACKEND_URL+"/user/profile", { withCredentials: true });
-        if(data.user) {
-            console.log(data.user);
-            return data.user
+        const res = await Axios.get(BACKEND_URL+"/user/profile", { withCredentials: true });
+        if(res.data.user) {
+            console.log(res.data.user);
+            return res.data.user
         }
     } catch (error) {
         console.error("Error fetching user profile: ", error.message );
@@ -33,21 +35,39 @@ export default function Profile() {
     const [ isEdit, setIsEdit ] = useState(false);
     const [ user, setUser ] = useState(null);
     const [ errors, setErrors ] = useState({});
+    const [ avatar, setAvatar ] = useState(null);
+    const [ avatarPreview, setAvatarPreview ] = useState(null);
+    
 
     useEffect(() => {
-        try {
-            const userProfile = getProfile();
-            setUser(userProfile);
-            console.log("User profile succcessfully fetched")
-        } catch (error) {
-            console.error("Error fetching user profile: ", error.message)
-            setUser(null);
+        const loadProfile = async () => {
+            try {
+                const userProfile = await getProfile();
+                setUser(userProfile);
+                if (userProfile.avatar){
+                    console.log(`${BACKEND_URL}/${userProfile.avatar}`)
+                    setAvatarPreview(`${BACKEND_URL}/${userProfile.avatar}`);
+                }        
+                console.log("User profile succcessfully fetched")
+            } catch (error) {
+                console.error("Error fetching user profile: ", error.message)
+                setUser(null);
+            }
         }
-    }, [])
+        loadProfile();
+    }, [isEdit])
 
     // Edit Handler (Switch between edit and profile mode)
     const handleEdit = () => {
         setIsEdit(!isEdit);
+    }
+
+    const handleAvatarChange = (e) => {
+        const file = e.target.files[0];
+        if(!file){
+            return;
+        }
+        setAvatar(file);
     }
 
     // Signup input validation
@@ -79,8 +99,16 @@ export default function Profile() {
         if(Object.keys(errors).length > 0){
             return ;
         }
+        const formData = new FormData();
+        Object.entries(user).forEach(([key, value]) => {
+            formData.append(key, value);
+        })
+        if (avatar) {
+            formData.append("avatar", avatar)
+        }
+        console.log(formData)
         try {
-            await updateProfile(user)
+            await updateProfile(formData)
             console.log("User profile successfully updated")
             handleEdit();
         } catch (error) {
@@ -104,9 +132,28 @@ export default function Profile() {
             { user 
                 ?
             
-            <Box display="flex" flexDirection="row" flexWrap={{xs: "wrap", sm: "nowrap"}} gap={10} sx={{ m: 2, p: 2}}>
-                <Box justifyContent={"center"} alignSelf={"center"} sx={{width: "80px", height: "80px"}}>
-                    <img src={"image_placeholder.png"} width={"120px"} height={"120px"} />
+            <Box display="flex" flexDirection="row" flexWrap={{xs: "wrap", sm: "nowrap"}} gap={5} sx={{ m: 2, p: 2}}>
+                <Box justifyContent={"center"} alignItems={"center"}>
+                    <Avatar src={avatarPreview || undefined} sx={{ width: 120, height: 120, mx: "auto", my: 2, border: "2px solid", borderColor: "primary.light", boxShadow: "0 0 20px 0 grey" }} >
+                        {!avatarPreview && <PersonRoundedIcon fontSize='large'/>}
+                    </Avatar>
+                    <Box>
+                        { isEdit &&
+                        <Button
+                                component='label'
+                                variant='outlined'
+                                startIcon={<CloudUploadRoundedIcon />}
+                            >
+                                Update Avatar
+                                <input
+                                    type='file'
+                                    hidden
+                                    accept='"image/*'
+                                    onChange={handleAvatarChange}
+                                />
+                            </Button>
+                            }
+                    </Box>
                 </Box>
                 <Box component='form' onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
                     <Grid container rowSpacing={2} columnSpacing={2} >
@@ -122,7 +169,7 @@ export default function Profile() {
                                 error={Boolean(errors.firstName)}
                                 helperText={errors.firstName}
                                 disabled={!isEdit}
-                                value={user.firstname}
+                                value={user.firstName}
                             />
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6 }}>
@@ -136,7 +183,7 @@ export default function Profile() {
                                 error={Boolean(errors.lastName)}
                                 helperText={errors.lastName}
                                 disabled={!isEdit}
-                                value={user.lastname}
+                                value={user.lastName}
                             />
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6 }}>
@@ -176,7 +223,7 @@ export default function Profile() {
                             />
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6 }}>
-                        {/* Update Avatar */}
+                            
                         </Grid>
                         {isEdit &&
                             <Grid size={{ xs: 12 }} sx={{my: 2, justifyContent: "center"}}>

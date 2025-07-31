@@ -8,6 +8,8 @@ import authRouter from './routes/authRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import itineraryRouter from './routes/itineraryRoutes.js';
 import chatRouter from './routes/chatRoutes.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Load environment variables
 dotenv.config();
@@ -18,10 +20,13 @@ const corsOptions = {
     origin: process.env.FRONTEND_URL,
     credentials: true,
 }
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
+app.use('/uploads', express.static(path.join(__dirname,'uploads')))
 
 // Routes
 app.use('/auth', authRouter);

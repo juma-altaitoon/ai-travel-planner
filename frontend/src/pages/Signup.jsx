@@ -7,15 +7,26 @@ import { Typography, Container, Box, Avatar, Divider, Grid, Button, Fade } from 
 import { TextField, InputAdornment, IconButton } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { DatePicker } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import CountrySelect from '../components/itineraryForm/CountrySelect';
+
 
 export default function Signup() {
     const [ newUser, setNewUser ] = useState({});
     const [ showPassword, setShowPassword ] = useState(false);
+    const [ confirmPassword, setConfirmPassword ] = useState(null);
     const [ showConfirmPassword, setShowConfirmPassword ] = useState(false);
     const [ errors, setErrors ] = useState({});
     const { signup } = useContext(AuthContext);
     const [ showForm,  setShowForm ] = useState(true);
+    const [ avatar, setAvatar ] = useState(null);
+    const [ avatarPreview, setAvatarPreview ] = useState(null);
+    const [ countryObject, setCountryObject ] = useState(null);
 
+    
     // Snackbar state
     // const [ openSB, setOpenSB ] = useState(false);
 
@@ -59,17 +70,39 @@ export default function Signup() {
         } else if (!passwordRegex.test(newUser.password)) {
             errorMessages.confirmPassword = "Password should contain at least 1 lowercase, 1 uppercase, 1 number and 1 special character";
         }
-        if (newUser.password !== newUser.confirmPassword){
+        if (newUser.password !== confirmPassword){
+            console.log("password: ", newUser.password, "confirmPass: ", confirmPassword);
             errorMessages.confirmPassword = "Passwords do not match";
         } 
         return errorMessages
+    }
+
+    const handleCountryChange = (name, value) => {
+        setCountryObject(value)
+        const data = { ...newUser};
+        data[name] = value.label;
+        setNewUser(data);
+    }
+
+    const handleAvatarChange = (e) => {
+        const file = e.target.files[0];
+        if(!file){
+            return;
+        }
+        setAvatar(file);
+        setAvatarPreview(URL.createObjectURL(file));
+    }
+
+    const handleDOB = (value) => {
+        const user = { ...newUser };
+        user["dateOfBirth"] = dayjs(value).format('DD/MM/YYYY');
+        setNewUser(user);
     }
 
     const handleChange = (event) => {
         const user = { ...newUser };
         user[event.target.name] = event.target.value;
         setNewUser(user);
-        
     }
 
     const handleSubmit = async (event) => {
@@ -79,13 +112,25 @@ export default function Signup() {
         if(Object.keys(errors).length > 0){
             return ;
         }
-        try {
-            console.log(newUser)
-            setShowForm(false)
-            await signup(newUser)
+
+        setShowForm(false);
+        const formData = new FormData();
+        Object.entries(newUser).forEach(([key, value]) => {
+            console.log(key," : ",value)
+            formData.append(key, value);
+        })
+        if (avatar){
+            formData.append("avatar", avatar);
+        }
+        console.log(newUser)
+        console.log(formData.entries())
+        try {    
+            await signup(formData)
             
         } catch (error) {
             console.error( "Signup Error: ", error.message)
+        }finally {
+            setShowForm(true);
         }
     }
 
@@ -113,7 +158,7 @@ export default function Signup() {
                         User Signup Information
                     </Typography>
                     <Divider/>
-                    <Box component='form' onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
+                    <Box component='form' encType="multipart/form-data" onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
                         <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }} >
                             <Grid size={"grow"}>
                                 <TextField
@@ -213,6 +258,7 @@ export default function Signup() {
                                     id='confirmPassword'
                                     label='Confirm Password'
                                     name='confirmPassword'
+                                    onChange={(value) => setConfirmPassword(value.target.value)}
                                     type={showConfirmPassword ? 'text' : 'password'} 
                                     slotProps={{
                                         input: {
@@ -237,49 +283,51 @@ export default function Signup() {
                                 <Divider/>
                             </Grid>
                             <Grid size={6}>
-                                <TextField
-                                    margin='normal'
-                                    fullWidth
-                                    id='yearOfBirth'
-                                    label='Year of Birth'
-                                    name='yearOfBirth'
-                                    type='number'
-                                    min="1900"
-                                    max="2025"
-                                    onChange={handleChange}
-                                />  
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DatePicker
+                                        fullWidth
+                                        label="Date of Birth"
+                                        value={newUser.dateOfBirth}
+                                        onChange={(value) => handleDOB(value)}
+                                        disableFuture
+                                        // Set minimum age
+                                        maxDate={dayjs().subtract(13, "year")}
+                                    />
+                                </LocalizationProvider>  
                             </Grid>
                             <Grid size={6}>
-                                <TextField
-                                    margin='normal'
+                                <CountrySelect  
                                     fullWidth
-                                    id='country'
-                                    label='Country'
-                                    name='country'
-                                    autoComplete='country'
-                                    onChange={handleChange}
-                                />  
+                                    value={countryObject}
+                                    onChange={(event, newValue) => handleCountryChange('country', newValue) }
+                                />
                             </Grid>
-                            <Grid size={"grow"}>
-                                <Button
-                                    fullWidth
-                                    component='Input'
-                                    variant='contained'
-                                    role={undefined}
-                                    tabIndex={-1}
-                                    margin='normal'
-                                    id='avatar'
-                                    label='Avatar'
-                                    name='avatar'
-                                    type='file'
-                                    startIcon={<CloudUploadRoundedIcon />}
-                                >
-                                    Upload avatar image
-                                </Button>
+                            <Grid size={{ xs: 12 }}>
+                                <Box display={"flex"} justifyContent={"space-evenly"}>
+                                    <Avatar src={avatarPreview} sx={{ width: 80, height: 80, mx: "auto", my: 1 }} >
+                                        <PersonRoundedIcon fontSize='large'/>
+                                    </Avatar>
+
+                                    <Button
+                                        component='label'
+                                        variant='outlined'
+                                        startIcon={<CloudUploadRoundedIcon />}
+                                        sx={{ mx: "auto" }}
+                                    >
+                                        Upload Avatar
+                                        <input
+                                            type='file'
+                                            hidden
+                                            accept='"image/*'
+                                            onChange={handleAvatarChange}
+                                        />
+                                    </Button>
+                                </Box>
                             </Grid>
                         </Grid>
+                        <Divider sx={{ my: 2 }}/>
                         <Grid size={"grow"} sx={{ display: 'flex', justifyContent: 'center', m: 3 }}>
-                            <Button type='submit' variant='outlined'>
+                            <Button type='submit' variant="contained">
                                 Submit
                             </Button>
                         </Grid>
