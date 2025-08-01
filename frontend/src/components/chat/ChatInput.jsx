@@ -15,7 +15,7 @@ export default function ChatInput ({ sendMessage }) {
     };
 
     return (
-        <Box display={"flex"} alignItems={"center"} p={2} m={2} sx={{ border: "1px solid", borderRadius: 5, borderColor: "secondary.dark" }}>
+        <Box display={"flex"} alignItems={"center"} p={1} m={1} >
             <TextField 
                 fullWidth
                 multiline

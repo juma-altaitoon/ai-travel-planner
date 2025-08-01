@@ -38,7 +38,7 @@ const deleteChat = async (chatId) => {
 export default function GeneratedItinerary({ itinerary }) {
     // const { state } = useLocation();
     const navigate = useNavigate();
-    const [ expand, setExpand ] = useState(false);
+    const [ expand, setExpand ] = useState(true);
     const [ tabIndex, setTabIndex ] = useState(0);
     // const [ itinerary, setItinerary ] = useState(state?.itinerary || null);
 

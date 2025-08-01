@@ -8,7 +8,7 @@ export default function ItineraryCard ({ tripId, title, subtitle, imageUrl, onVi
         <>
             <Link to={`/itinerary/${tripId}`} style={{ textDecoration: "none" }}>
                 <CardActionArea onClick={onView} sx={{ borderRadius: 5, transition: "0.2s", "&:hover": { transform: "scale(1.1)" } }}> 
-                    <Card sx={{ minHeight: "100%", minWidth: 100, borderRadius: 5, boxShadow: "none", "&:hover": { boxShadow: "0 6px 12px 0 green " } }}>
+                    <Card sx={{ minHeight: "80%", minWidth: "50%", borderRadius: 5, boxShadow: "none", "&:hover": { boxShadow: "0 6px 12px 0 grey " } }}>
                         <CardMedia
                             component= "img"
                             loading="lazy"

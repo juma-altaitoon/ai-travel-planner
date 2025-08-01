@@ -3,7 +3,7 @@ import AddIcon from '@mui/icons-material/Add';
 import React from "react";
 import { useState } from "react";
 import Axios from 'axios';
-import Chat from "./Chat";
+import Chat from "../components/chat/Chat";
 
 
 const BACKEND_URL = import.meta.env.VITE_API_URL;

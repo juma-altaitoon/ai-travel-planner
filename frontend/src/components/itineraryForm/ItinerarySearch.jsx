@@ -6,7 +6,7 @@ import CountrySelect from './CountrySelect';
 import dayjs from 'dayjs';
 import Axios from 'axios';
 import { useNavigate } from 'react-router';
-import ProgressDialog from '../ProgressDialog';
+import ProgressDialog from '../itineraries/ProgressDialog';
 
 const BACKEND_URL = import.meta.env.VITE_API_URL;
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Container } from '@mui/material';
-import ChatWindow from "../components/chat/ChatWindow";
-import ChatInput from "../components/chat/ChatInput";
+import ChatWindow from "./ChatWindow";
+import ChatInput from "./ChatInput";
 import Axios from 'axios';
 
 const BACKEND_URL = import.meta.env.VITE_API_URL;
@@ -73,8 +73,8 @@ export default function Chat ({ chatId }) {
     };
 
     return (
-        <Box sx={{ display: "flex", flexDirection:"column", justifyContent: "center", bgcolor: "background.paper", borderRadius: 5, height: "80%" }}>
-            <Box sx={{ flex:0.7, p: 1, m: 1, border: "2px solid", borderRadius: 5, borderColor: "secondary.light", boxShadow:"0 0px 10px 10px green", maxHeight: "80%" }}  >
+        <Box sx={{ display: "flex", flexDirection:"column", justifyContent: "center", bgcolor: "background.paper", borderRadius: 5, height: "80%", boxShadow: "0 0 10px 0 grey" }}>
+            <Box sx={{ flex:0.7, p: 1.5, m: 1, border: "2px solid", borderRadius: 5, borderColor: "text.secondary", maxHeight: "80%" }}  >
                 <ChatWindow messages={messages} isTyping={isTyping}/>
 
             </Box>

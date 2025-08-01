@@ -26,9 +26,28 @@ const featuresList = [
 export default function Features() {
 
     return (
-        <Box sx={{ p: 10, bgcolor: "background.paper", minHeight: "100vh" }}>
-            <Grid container spacing={4} sx={{ p: 1, justifyContent:"center", alignItems: "center"}}>
-                <Grid  size={{ xs: 12 }} sx={{display: "flex", justifyContent: "space-evenly", alignItems: "center", color: "secondary.light", bgcolor: "primary.dark", py: 4, border: "2px solid", borderRadius: "10%", borderColor: "secondary.dark"}}>
+        <Box sx={{ p: 5, bgcolor: "background", minHeight: "100vh", display: "flex", justifyContent: "space-between", flexWrap: "wrap"  }}>
+            <Box 
+                component={"img"} 
+                src="Adventure_bot.png" 
+                sx={{ 
+                    border: "2px solid",
+                    borderColor: "primary.dark",
+                    borderRadius: 35,
+                    my: 5,
+                    height: "80%",
+                    width: "80%",
+                    maxWidth: "600px", 
+                    maxHeight: "800px",
+                    boxShadow: `0 0 40px 5px grey`,
+                     "&:hover": { 
+                        bgcolor: "primary.main", 
+                        borderColor: "primary.light",
+                        boxShadow: `0 0 40px 10px white` 
+                    }      
+                }}/>
+            <Grid container maxWidth = "sm" spacing={4} sx={{ p: 1, justifyContent:"center", alignItems: "center"}}>
+                <Grid  size={{ xs: 12 }} sx={{display: "flex", justifyContent: "space-evenly", alignItems: "center", color: "secondary.light", bgcolor: "primary.light", py: 4, border: "2px solid", borderRadius: 5, borderColor: "secondary.dark"}}>
                     <PanoramaIcon fontSize='large'/>
                     <LuggageIcon fontSize='large'/>
                     <MuseumIcon fontSize='large'/>
@@ -37,8 +56,8 @@ export default function Features() {
                     <HikingIcon fontSize='large'/>
                 </Grid>
                 { featuresList.map((feature, i) => (
-                    <Grid size={{xs: 12, md: 4}} key={i}>
-                        <Paper elevation={3} sx={{ p:1, height: "100%", borderRadius: "10px", border: "2px solid", borderColor: "primary.main", "&:hover": { bgcolor: "GrayText", borderColor: "primary.light" }}}>
+                    <Grid size={{xs: 12, md: 6}} key={i}>
+                        <Paper elevation={3} sx={{ p:1, height: "100%", borderRadius: 5, border: "1px solid", boxShadow: `0 0 30px 0 grey`, borderColor: "primary.main", "&:hover": { bgcolor: "GrayText", borderColor: "primary.light" }}}>
                             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", my: 2 }}>
                                 {feature.icon}
                                 <Typography variant="h6" color="secondary" sx={{ mt: 2 }}>

@@ -15,7 +15,7 @@ import Footer from './components/Footer.jsx';
 import { Box } from '@mui/material';
 import ForgotPassword from './pages/ForgootPassword.jsx';
 import ItineraryForm from './components/itineraryForm/ItinerarySearch.jsx';
-import GeneratedItinerary from './components/GeneratedItinerary.jsx';
+import GeneratedItinerary from './components/itineraries/GeneratedItinerary.jsx';
 import Itineraries from './pages/Itineraries.jsx';
 import ItineraryDetails from './pages/ItineraryDetails.jsx';
 import ProtectedRoute from './context/ProtectedRoute.jsx';
@@ -23,6 +23,7 @@ import Profile from './pages/Profile.jsx';
 import ChatPage from './pages/ChatPage.jsx';
 import Planner from './pages/Planner.jsx';
 import WelcomeScreen from './components/WelcomeScreen.jsx';
+import Contact from './pages/Contact.jsx';
 
 
 export default function App() {
@@ -30,7 +31,7 @@ export default function App() {
   const theme = useMemo(() => getTheme(mode), [mode]);
 
   return (
-    <ThemeProvider theme= {theme}>
+    <ThemeProvider theme= {theme} noSsr>
       <Box 
         sx={{
           minHeight: '100vh',
@@ -46,6 +47,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword/>}/>
           <Route path="/reset/:resetToken" element={<PasswordReset />} />
+          <Route path='/contact' element={<Contact/>} />
           <Route path='/user' element={<Profile />} />
           <Route path='/chat' element={<ChatPage/>} />
 

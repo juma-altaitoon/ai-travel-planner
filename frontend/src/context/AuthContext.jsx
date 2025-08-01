@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
                 })
         };
         checkAuth();
-    }, []);
+    }, [user]);
 
     const showSnackbar = (message, severity = "info") => {
         setMessage(message);

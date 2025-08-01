@@ -1,9 +1,9 @@
 import React from 'react';
 import { Typography } from '@mui/material';
-import Hero from '../components/Hero';
-import Features from '../components/Features';
-import Testimonials from '../components/Testimonial';
-import Contact from '../components/Contact';
+import Hero from '../components/home/Hero';
+import Features from '../components/home/Features';
+import Testimonials from '../components/home/Testimonial';
+import Contact from './Contact';
 
 export default function Home() {
     return (
@@ -11,7 +11,6 @@ export default function Home() {
             <Hero/>
             <Features/>
             <Testimonials/>
-            <Contact/>
         </>
     )
 }

@@ -47,9 +47,6 @@ export default function Hero () {
             justifyContent: "space-evenly",
             alignItems: "center",
         }}>
-            <Typography variant="h1" sx={{ fontWeight: 'bold', color:"secondary.dark", zIndex: 1 }}>
-                AI Travel Planner
-            </Typography>
             <video 
                 autoPlay
                 muted
@@ -69,10 +66,10 @@ export default function Hero () {
             </video>
             
             
-            <Typography variant="h5" sx={{ m: 2, fontWeight:"bold", zIndex: 1, color: "primary.main"}}>
+            <Typography variant="h5" sx={{ m: 2, fontWeight:"bold", zIndex: 1, color: "secondary.dark", opacity: 0.9, borderRadius: 2 }}>
                 BUILD & PLAN your personalized Itinerary in seconds.
             </Typography>
-            <Typography variant="h4" sx={{ m: 2, fontWeight:"bold", color: "blue", zIndex: 1, bgcolor: "lightgrey", opacity: 0.6, maxWidth: "md", borderRadius: 4 }}>
+            <Typography variant="h4" sx={{ m: 2, fontWeight:"bold", color: "blue", zIndex: 1, opacity: 0.8, maxWidth: "md", borderRadius: 4 }}>
                 Explore&nbsp;
                 <TypeAnimation
                     sequence={typingSequence}
@@ -83,7 +80,7 @@ export default function Hero () {
                 />
             </Typography>
             <Link to="/itinerary/form">
-                <Button variant="contained" size="large" sx={{ maxWidth:"50%", mx:"auto", my: 2, borderRadius: 10 }}>
+                <Button variant="contained" size="large" sx={{ maxWidth:"50%", mx:"auto", my: 2, borderRadius: 10, border: "1px solid", boxShadow: `0 10px 80px 20px grey` }}>
                     Generate Your Itinerary
                 </Button>
             </Link>

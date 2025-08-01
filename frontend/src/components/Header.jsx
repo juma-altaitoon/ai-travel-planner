@@ -21,9 +21,9 @@ import FaceIcon from '@mui/icons-material/Face'
 
 
 
-const normalPages = [{name:'About', link: "about"}, {name: 'Contact', link: "#contact"}];
-const authPages = [{name:'About', link: "about"}, {name: 'Itinerary', link: "itinerary"},{name: "Generate", link: "itinerary/form"}, {name: "Chat", link: "chat"}, {name: 'Contact', link: "#contact"}]
-const settings = ['Profile', 'Collection', 'Logout'];
+const normalPages = [{name:'About', link: "about"}, {name: 'Contact', link: "contact"}];
+const authPages = [{name:'About', link: "about"}, {name: 'Itinerary', link: "itinerary"},{name: "Generate", link: "itinerary/form"}, {name: "Chat", link: "chat"}, {name: 'Profile', link: "user"}, {name: 'Contact', link: "contact"}];
+const settings = ['Logout'];
 
 export default function Header({ mode, setMode}) {
   // Get Authentication context
@@ -69,18 +69,19 @@ export default function Header({ mode, setMode}) {
     <AppBar elevation={5} position="static" enableColorOnDark sx={{ bgcolor: "transparent"}} >
       <Container maxWidth="xl" sx={{bgcolor: "transparent", boxShadow: "none"}}>
         <Toolbar disableGutters sx={{ display: 'flex', justifyContent: 'center', bgcolor:"transparent" }}>
-          <Avatar src={"branding_Icon.png"}  sx={{ display: {xs: 'none', md:"flex"}, m:2, height:40, width:40}}/>
+          <Link to={"/"}>
+            <Avatar src={"branding_Icon.png"}  sx={{ display: {xs: 'none', md:"flex"}, m:1, height:40, width:40}}/>
+          </Link>
           <Typography
             variant="h6"
             noWrap
             component={Link}
             to={"/"}
             sx={{
-              mr: 2,
+              mr: 1,
               display: { xs: 'none', md: 'flex' },
               fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
+              fontWeight: 500,
               color: 'text.primary',
               textDecoration: 'none',
             }}
@@ -132,19 +133,21 @@ export default function Header({ mode, setMode}) {
                 : null }
             </Menu>
           </Box>
-          <Avatar src={"branding_Icon.png"}  sx={{ display: {xs: 'flex', md:"none"}, m:2, height:40, width:40}}/>
+          <Link to={"/"}>
+            <Avatar src={"branding_Icon.png"}  sx={{ display: {xs: 'flex', md:"none"}, m:2, height:40, width:40}}/>
+          </Link>
           <Typography
             variant="h6"
             noWrap
             component={Link}
             to={"/"}
             sx={{
-              mr: 2,
+              mr: 1,
               display: { xs: 'flex', md: 'none' },
               flexGrow: 1,
+              flexShrink: 1,
               fontFamily: 'monospace',
               fontWeight: "bold",
-              letterSpacing: '.2rem',
               color: 'text.primary',
               textDecoration: 'none',
             }}
@@ -204,7 +207,7 @@ export default function Header({ mode, setMode}) {
               </Menu>
             </Box>
           }
-          <Box sx={{ flexGrow: 0, ml: 2 }}>
+          <Box sx={{ flexGrow: 0, ml: 1 }}>
             <IconButton 
                 sx={{ ml: 1 }}
                 onClick={() => setMode(mode === 'light' ? 'dark' : 'light' )}
@@ -214,7 +217,6 @@ export default function Header({ mode, setMode}) {
                   : <DarkModeIcon color="action"/> 
                 }
             </IconButton>
-
           </Box>
         </Toolbar>
       </Container>

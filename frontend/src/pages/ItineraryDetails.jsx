@@ -1,11 +1,11 @@
 import { Box, Button, CircularProgress, Container, DialogActions, Grid, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router';
-import ItineraryDetailsView from '../components/ItineraryDetailsView';
-import Chat from '../pages/Chat'
+import ItineraryDetailsView from '../components/itineraries/ItineraryDetailsView';
+import Chat from '../components/chat/Chat';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Axios from 'axios';
-import DeleteDialog from '../components/DeleteDialog';
+import DeleteDialog from '../components/itineraries/DeleteDialog';
 
 const BACKEND_URL = import.meta.env.VITE_API_URL;
 
@@ -90,7 +90,7 @@ export default function ItineraryDetails () {
             </Box>
             <Container sx={{ overflow: { sm: "auto", md: "hidden" } }}>
                 <Grid container sx={{ height: "100vh", width: "100%" }} >
-                    <Grid size={{xs: 12, md: 6}} sx={{ border: "1px solid", overflowY: "auto", height:"100%", boxSizing: "border-box", pr: 1 }}> 
+                    <Grid size={{xs: 12, md: 6}} sx={{ overflowY: "scroll", scrollbarWidth: "none", height:"100%", boxSizing: "border-box", pr: 1 }}> 
                         { id && <ItineraryDetailsView tripId={id} openDialog={openDialog}/>}
                     </Grid>
                     <Grid size={{xs: 12, md: 6}} sx={{ height: "100vh", overflow: 'hidden', pl: 2, boxSizing: "border-box", display: 'flex', justifyContent: "center", alignItems: "center" }}>

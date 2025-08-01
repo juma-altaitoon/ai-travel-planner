@@ -85,9 +85,9 @@ export default function DailyActivities({ dayActivities }) {
             
             <Stack sx={{ py:2, border: "2px solid", borderColor:"primary.dark", borderRadius: 5, "&:hover": { bgcolor:"Highlight" } }}>
                 <Divider sx={{ mb: 2, color:"text.primary" }} >Commute</Divider>
-                <Stack direction={"row"} spacing={5} justifyContent="center" sx={{ mb:2 }}>
+                <Stack direction={"row"} flexWrap={"wrap"} rowGap={2} spacing={3} justifyContent="space-around" sx={{ mb:2 }}>
                     {dayActivities.transport.map((mode, idx) => (
-                        <Chip key={idx} label={mode} variant="filled" />
+                        <Chip key={idx} label={mode} variant="filled" sx={{ my:1}} />
                     ))}
                 </Stack>
                 {dayActivities.notes && (

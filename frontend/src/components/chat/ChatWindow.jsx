@@ -16,8 +16,8 @@ export default function ChatWindow ({ messages, isTyping }) {
     }, [messages])
 
     return (
-        <Box sx={{ py:2, height: "100%", overflow :"scroll", overflowY: "auto", overflowX:"hidden", scrollBehavior: "smooth", borderRadius: 5, width: "100%" }}>
-            <Paper elevation={3} sx={{ maxWidth: "70%", p: 1, bgcolor: "primary.dark", borderRadius: 3}} >
+        <Box sx={{ py:2, height: "100%", overflow :"scroll", overflowY: "scroll", scrollbarWidth: "none", overflowX:"hidden", scrollBehavior: "smooth", borderRadius: 5, width: "100%" }}>
+            <Paper elevation={3} sx={{ maxWidth: "70%", p: 1, bgcolor: "primary.dark", borderRadius: 5}} >
                 <Typography variant="body1" whiteSpace="pre-line" color="white" >
                     Hey there! I'm your travel assistant, and I can't wait to help you plan an unforgettable trip. Let's dive into your itinerary and craft something memorable!"
                 </Typography>

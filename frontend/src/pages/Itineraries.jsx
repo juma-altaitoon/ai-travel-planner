@@ -50,13 +50,13 @@ export default function Itineraries() {
         ?
           <CircularProgress/>
         :
-        <Container maxWidth="md" sx={{ position: "relative", my: 4, pb: 4, bgcolor: "background.paper", borderRadius: 16, display: "flex", flexDirection: "column", justifyContent: 'space-evenly', alignItems: "center", minHeight: "60vh"  }}>
-            <Typography variant='h5' fontWeight={"bold"} textAlign="center" color='primary.main' sx={{ my: 4 }}>
+        <Container sx={{ position: "relative", my: 2, pb: 2, bgcolor: "background.paper", borderRadius: 5, display: "flex", flexDirection: "column", justifyContent: 'space-evenly', alignItems: "center", height: "100%"  }}>
+            <Typography variant='h5' fontWeight={"bold"} textAlign="center" color='primary.main' sx={{ my: 2 }}>
                 Your Saved Itineraries
             </Typography>
             {itineraryList && itineraryList.length > 0 
             ? 
-                <Grid container spacing={4} >
+                <Grid container spacing={2} >
                     {itineraryList.map((trip, index) =>(
                         console.log(),
                         <Grid size={{ xs: 6, sm: 4}} key={index}>
@@ -73,11 +73,13 @@ export default function Itineraries() {
             :
             <>
                 <Typography variant='h6' color='secondary.dark' textAlign="center"> You Don't have any Itineraries! </Typography>
-                <Button variant='contained' color='primary' size='medium' sx={{ maxWidth: "200px", borderRadius: 5}} >Let's generate one</Button>
+                <Link to={"/itinerary/form"}>
+                  <Button variant='contained' color='primary' size='medium' sx={{ maxWidth: "200px", borderRadius: 5}} >Let's generate one</Button>
+                </Link>
             </>
             }
             <Link to="/itinerary/form">
-              <Fab size="large" color="warning" aria-label='add itinerary' sx={{ position: "absolute", right: 15, bottom: 15}} >
+              <Fab size="large" color="warning" aria-label='add itinerary' sx={{ position: "absolute", right: 10, bottom: 10}} >
                 <AddIcon/>
               </Fab>
             </Link>
