@@ -72,9 +72,7 @@ export default function PasswordReset () {
         }
         try {
             resetData["resetToken"] = resetToken
-            // console.log(resetData)
             await passwordReset(resetData);
-            console.log()
             navigate("/"); 
                 
         } catch (error) {

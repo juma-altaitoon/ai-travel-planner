@@ -58,7 +58,6 @@ export const generateTest = async (req, res) => {
             model: process.env.OPENAI_MODEL,
         })
 
-        console.log("Response from OpenAI: ", response);
         return res.status(200).json({ message: "Test response.", response: response.choices[0].message.content })
     } catch (error) {
         console.error("Error generating test responses: ", error.message);
@@ -152,15 +151,14 @@ export const generateItinerary = async (req, res) => {
             const itinerary = JSON.parse(response.choices[0].message.content);
             itinerary.user = req.user;
             itinerary.image = await getUnsplashImageUrl(`${itinerary.country} ${itinerary.city}`)
-            console.log("ITINERARY: ", itinerary.itineraryDays)
+            
             for (const element of itinerary.itineraryDays){
-                console.log("element.morning: ", element.morning.location)
                 element.morning.locationImg = await getUnsplashImageUrl(`${itinerary.country} ${itinerary.city} ${element.morning.location}`);
-                console.log("location IMG: ", element.morning.locationImg);
                 element.morning.youtubeLink = await getYoutubeLink(`${itinerary.country} ${itinerary.city} ${element.morning.location}`)
-                console.log("Youtube LINK: ", element.morning.youtubeLink);
+                
                 element.afternoon.locationImg = await getUnsplashImageUrl(`${itinerary.country} ${itinerary.city} ${element.afternoon.location}`);
                 element.afternoon.youtubeLink = await getYoutubeLink(`${itinerary.country} ${itinerary.city} ${element.afternoon.location}`);
+                
                 element.evening.locationImg = await getUnsplashImageUrl(`${itinerary.country} ${itinerary.city} ${element.evening.location}`);
                 element.evening.youtubeLink = await getYoutubeLink(`${itinerary.country} ${itinerary.city} ${element.evening.location}`);
             };
@@ -197,7 +195,7 @@ export const saveItinerary = async (req, res) => {
 
 // Delete an itinerary
 export const deleteItinerary = async (req, res) => {
-        console.log("deleteItinerary: ", req.body)
+        // console.log("deleteItinerary: ", req.body)
     try {
         const { id } = req.body;
         const itinerary = await Itinerary.findByIdAndDelete(id);

@@ -36,7 +36,7 @@ export default function ChatPage () {
     const handleOpenChat = async() => {
         try {
             const id = await getChatId() || await createChat();
-            console.log(id);
+            // console.log(id);
             setChatId(id);
             setChatOpen(true);
         } catch (error) {

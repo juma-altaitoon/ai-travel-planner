@@ -34,7 +34,7 @@ export const updateProfile = async (req, res) => {
         } = req.body;
     
         const user = await User.findById(userId).select("avatar");
-        console.log("user: ", user);
+        // console.log("user: ", user);
         const oldAvatar = user.avatar;
         
         const updateUser = await User.findByIdAndUpdate(

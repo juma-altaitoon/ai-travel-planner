@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
     const signup = async (userData) => {
         try {
             const response = await Axios.post(BACKEND_URL+"/auth/signup", userData)
-            console.log(response.data);
+            // console.log(response.data);
             showSnackbar("Signup Successful.", "success");
             // Snackbar goes here
             setTimeout(() => {
@@ -69,7 +69,6 @@ export const AuthProvider = ({ children }) => {
     const login = async (userData) => {
         await Axios.post(BACKEND_URL+"/auth/login", userData, { withCredentials: true })
             .then((response) => {
-                console.log(response.data);
                 setIsAuthenticated(true);
                 setUser(response.data.user);
                 showSnackbar("Login Successful.", "success");
@@ -100,7 +99,7 @@ export const AuthProvider = ({ children }) => {
     const forgotPassword = async (email) => {
         await Axios.post(BACKEND_URL+"/auth/forgot-password", email)
             .then((response) => {
-                console.log("Successful password reset request", response.data);
+                console.log("Successful password reset request");
                 showSnackbar("Password reset request sent", "success");
             })
             .catch((error) => {
@@ -112,7 +111,7 @@ export const AuthProvider = ({ children }) => {
     const passwordReset = async (resetData) => {
         await Axios.post(BACKEND_URL+"/auth/reset-password", resetData , {withCredentials: true})
             .then((response) => {
-                console.log("Successful password reset", response.data);
+                console.log("Successful password reset");
                 showSnackbar("Password reset successful", "success");
             })
             .catch((error) => {

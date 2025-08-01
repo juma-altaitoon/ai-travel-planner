@@ -22,7 +22,7 @@ export const createChat = async (req, res) => {
             Personalize your advice and answer user questions clearly and accurately`
         const chatMessage = { role: "system", content: systemMessage };
         const chat = await Chat.create({ messages: [ chatMessage ], user: user, itinerary: false });
-        console.log(chat)
+        // console.log(chat)
 
         return res.status(201).json({ message :"Chat created." , chatId: chat.id });
     } catch (error) {
@@ -35,7 +35,6 @@ export const createItineraryChat = async (req, res) => {
     try {
         const user = req.user;
         const itinerary = req.body;
-        console.log("Itinerary: ", itinerary)
         const systemMessage = 
             `You are an expert travel advisor helping users plan personalized trips.
             Your goal is to suggest day-by-day activities, places to visit, and travel tips based on their itinerary.
@@ -45,7 +44,6 @@ export const createItineraryChat = async (req, res) => {
         const chatMessage = { role: "system", content: systemMessage };
         
         const chat = await Chat.create({ messages: [ chatMessage ], user: user });
-        console.log("chat.id: ", chat.id )
         return res.status(201).json({ message :"Chat created." , chatId: chat.id });
     } catch (error) {
         console.error( "Error creating chat", error.message );
@@ -71,13 +69,12 @@ export const getGeneralChatId = async (req, res) => {
 
 export const getChat = async (req, res) => {
     const { chatId } = req.body;
-    console.log(chatId)
+    // console.log(chatId)
     try {
         const chat = await Chat.findById(chatId);
         if (!chat){
             return res.status(404).json({ message: "Chat session not found" });
         }
-        console.log("getChat, chat: ", chat)
         return res.status(200).json({ message: "Chat session found", history: chat.messages  });
     } catch (error) {
         console.error("Failed to fetch chat1: ", error.message );
@@ -88,7 +85,6 @@ export const getChat = async (req, res) => {
 export const getItineraryChatId = async (req, res) => {
     // console.log(req.body)
     const { itineraryId }  = req.body;
-    console.log({itinerary: itineraryId, user: req.user})
     try {
         const chat = await Itinerary.findById(itineraryId).select("chat");
 
@@ -115,7 +111,6 @@ export const postMessage = async ( req, res) => {
         // update messeges with user's prompt
         chat.messages.push({ role: "user", content: prompt });
         // call AI API 
-        console.log("Chat Session : ", chat.messages)
 
         const completion = await client.chat.completions.create({
             model: "openai/gpt-4.1-mini",

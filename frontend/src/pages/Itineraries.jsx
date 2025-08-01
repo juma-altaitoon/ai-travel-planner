@@ -28,7 +28,7 @@ export default function Itineraries() {
     useEffect(() => {
         getItineraries()
           .then((data) => {
-            console.log(data.itineraries[0])
+            // console.log(data.itineraries[0])
             setItineraryList(data.itineraries)
           })
           .catch((error) => {
@@ -58,7 +58,6 @@ export default function Itineraries() {
             ? 
                 <Grid container spacing={2} >
                     {itineraryList.map((trip, index) =>(
-                        console.log(),
                         <Grid size={{ xs: 6, sm: 4}} key={index}>
                             <ItineraryCard
                                 tripId={trip._id}

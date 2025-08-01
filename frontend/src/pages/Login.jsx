@@ -59,10 +59,9 @@ export default function Login () {
             // if (Object.keys(errors).length > 0) {
             //     return ;
             // }
-            console.log(userLogin);
+
             await login(userLogin);
             console.log(message);
-            // navigate("/itinerary", { replace: true })
             navigate("/welcome", { replace: true })
         } catch (error) {
             console.error(error.message);

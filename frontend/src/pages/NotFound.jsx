@@ -1,5 +1,6 @@
 import React from 'react';
-import { Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
+import { Link } from 'react-router';
 
 export default function NotFound() {
     return (
@@ -7,6 +8,9 @@ export default function NotFound() {
             <Typography variant='h1' color='text.primary'>
                 Error - 404 : Page Not Found
             </Typography>
+            <Link to={"/"}>
+                <Button variant="contained" >Go To Homepage</Button>
+            </Link>
         </>
     )
 }

@@ -13,7 +13,6 @@ const BACKEND_URL = import.meta.env.VITE_API_URL;
 const getItineraryById = async (id) => {
     try {
         const response = await Axios.post(BACKEND_URL+"/itinerary/id", { id }, { withCredentials: true });
-        console.log(response.data)
         return response.data.itinerary;
     } catch (error) {
         console.error("Error fetching itinerary: ", error);
@@ -31,7 +30,6 @@ export default function ItineraryDetailsView({ tripId, openDialog }) {
         if (!tripId) return;
         let cancelled = false;
 
-        console.log(tripId)
         getItineraryById(tripId)
             .then((data) => {
                 if(!cancelled) {

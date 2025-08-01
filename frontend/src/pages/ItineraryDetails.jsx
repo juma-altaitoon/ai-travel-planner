@@ -11,9 +11,9 @@ const BACKEND_URL = import.meta.env.VITE_API_URL;
 
 const getItineraryChat = async (itineraryId) =>{
     try{    
-        console.log(itineraryId)
+        // console.log(itineraryId)
         const { data } = await Axios.post(BACKEND_URL+"/chat/itineraryId", {itineraryId}, { withCredentials: true });
-        console.log(data.chatId)
+        // console.log(data.chatId)
         
         return data.chatId
     } catch (error) {
@@ -25,9 +25,9 @@ const getItineraryChat = async (itineraryId) =>{
 const deleteItinerary = async (itineraryId, chatId) => {
     try {
         const delItinerary = await Axios.post(BACKEND_URL+"/itinerary/delete", {id: itineraryId}, { withCredentials: true });
-        console.log(delItinerary.data);
+        // console.log(delItinerary.data);
         const delChat =  await Axios.post(BACKEND_URL+"/chat/delete", {chatId}, { withCredentials: true });
-        console.log(delChat.data)
+        // console.log(delChat.data)
         return "Itinerary Successfully Deleted";
     } catch (error) {
         console.error("Error Deleting Itinerary: ", error);
@@ -50,7 +50,7 @@ export default function ItineraryDetails () {
         const getChatId = async (id) => {
             const chatId = await getItineraryChat(id);
             // if (!res) return;
-            console.log(chatId)
+            // console.log(chatId)
             setChatId(chatId);
         }
         if (id){

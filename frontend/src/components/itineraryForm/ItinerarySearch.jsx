@@ -30,7 +30,6 @@ const createItineraryChat = async (itinerary) => {
 const generateItinerary = async (formData) => {
     try {
         const response = await Axios.post(BACKEND_URL+'/itinerary/generate', formData, {withCredentials: true});
-        console.log(response.data)
         const generatedItinerary = response.data.itinerary;
         return generatedItinerary;
     } catch (error) {
@@ -71,7 +70,6 @@ export default function ItineraryForm(){
         const data = { ...form};
         data[name] = dayjs(value).toDate()
         setForm(data);
-        console.log(form);
     }
 
     const handleCountryChange = (name, value) => {
@@ -80,7 +78,7 @@ export default function ItineraryForm(){
 
         data[name] = value.label;
         setForm(data);
-        console.log(form);
+
     }
 
     const handleCheckboxChange = (event, preference) => {
@@ -96,18 +94,16 @@ export default function ItineraryForm(){
         const data = {...form};
         data.preferences = prefs;
         setForm(data);
-        console.log(form)
     }
 
     const handleSubmitForm = async (event) => {
         event.preventDefault();
         setLoading(true)
-        console.log(form)
+        // console.log(form)
         try {
             const generatedItinerary = await generateItinerary(form);
             const chatId = await createItineraryChat(generatedItinerary);
             generatedItinerary["chat"] = chatId;
-            console.log(generatedItinerary.chat)
             navigate("/itinerary/generated", { state: { itinerary: generatedItinerary, chatId: chatId }, replace: true })    
         } catch (error) {
             console.error("Error generating itinerary: ", error);

@@ -6,7 +6,6 @@ const FRONTEND_URL = process.env.FRONTEND_URL;
 
 // Test API
 export const checkAuth = async (req, res) => {
-    // console.log(req.user);
     const userId = req.user;
     if (!req.user){
         return res.status(401).json({ message: "Unauthorized access."})
@@ -23,8 +22,8 @@ export const checkAuth = async (req, res) => {
 // Signup 
 export const signup = async (req, res) => {
     try {
-        console.log("req.file", req.file)
-        console.log("req.body: ", req.body);
+        // console.log("req.file", req.file)
+        // console.log("req.body: ", req.body);
         const avatar = req.file ? `uploads/avatars/${req.file.filename}` : null;
         
         const { 
@@ -56,7 +55,7 @@ export const signup = async (req, res) => {
         })
         await user.save()
         .then((savedUser) => {
-            console.log(savedUser.email, savedUser.username);
+            // console.log(savedUser.email, savedUser.username);
             sendWelcomeEmail(savedUser.email, savedUser.username);
             res.status(201).json({ message: "User successfully registered.", savedUser});
         })
@@ -109,7 +108,6 @@ export const logout = async (req, res) => {
 
 // Forgot Password
 export const forgotPassword = async (req, res) => {
-    console.log(req.body)
     const { email } = req.body;
     // console.log(email);
     const user = await User.findOne({ email });
@@ -124,7 +122,6 @@ export const forgotPassword = async (req, res) => {
         .then((savedUser) => {
             const resetURL = `${FRONTEND_URL}/reset/${resetToken}`;
             // API test
-            console.log(savedUser.email, savedUser.username, resetURL);
             sendResetPassword(savedUser.email, savedUser.username, resetURL)
             return res.status(200).json({ message: "Reset Link sent" });
 

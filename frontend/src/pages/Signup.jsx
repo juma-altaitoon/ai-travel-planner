@@ -71,7 +71,6 @@ export default function Signup() {
             errorMessages.confirmPassword = "Password should contain at least 1 lowercase, 1 uppercase, 1 number and 1 special character";
         }
         if (newUser.password !== confirmPassword){
-            console.log("password: ", newUser.password, "confirmPass: ", confirmPassword);
             errorMessages.confirmPassword = "Passwords do not match";
         } 
         return errorMessages
@@ -116,14 +115,11 @@ export default function Signup() {
         setShowForm(false);
         const formData = new FormData();
         Object.entries(newUser).forEach(([key, value]) => {
-            console.log(key," : ",value)
             formData.append(key, value);
         })
         if (avatar){
             formData.append("avatar", avatar);
         }
-        console.log(newUser)
-        console.log(formData.entries())
         try {    
             await signup(formData)
             

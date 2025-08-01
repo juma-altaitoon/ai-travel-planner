@@ -14,10 +14,10 @@ export const sendWelcomeEmail = async (email, username) => {
   });
 
   if (error) {
-    return console.log(error);
+    return console.error(error);
   }
 
-  console.log("Email Successfully Sent", data);
+  console.log("Email Successfully Sent");
 };
 
 export const sendResetPassword = async (email, username, resetLink ) => {
@@ -29,8 +29,8 @@ export const sendResetPassword = async (email, username, resetLink ) => {
   });
 
   if (error) {
-    return console.log(error);
+    return console.error(error);
   }
 
-  console.log("Email Successfully Sent", data);
+  console.log("Email Successfully Sent");
 };

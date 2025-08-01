@@ -36,7 +36,7 @@ export default function Header({ mode, setMode}) {
   const pages = (isAuthenticated ? authPages : normalPages)
 
   useEffect(() => {
-    console.log("Authentication Status Changed: ", isAuthenticated, user);
+    // console.log("Authentication Status Changed: ", isAuthenticated);
   },[isAuthenticated, user])
 
   const handleOpenNavMenu = (event) => {

@@ -11,7 +11,6 @@ const getProfile = async () => {
     try {
         const res = await Axios.get(BACKEND_URL+"/user/profile", { withCredentials: true });
         if(res.data.user) {
-            console.log(res.data.user);
             return res.data.user
         }
     } catch (error) {
@@ -45,7 +44,7 @@ export default function Profile() {
                 const userProfile = await getProfile();
                 setUser(userProfile);
                 if (userProfile.avatar){
-                    console.log(`${BACKEND_URL}/${userProfile.avatar}`)
+                    // console.log(`${BACKEND_URL}/${userProfile.avatar}`)
                     setAvatarPreview(`${BACKEND_URL}/${userProfile.avatar}`);
                 }        
                 console.log("User profile succcessfully fetched")
@@ -106,7 +105,7 @@ export default function Profile() {
         if (avatar) {
             formData.append("avatar", avatar)
         }
-        console.log(formData)
+
         try {
             await updateProfile(formData)
             console.log("User profile successfully updated")

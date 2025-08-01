@@ -15,7 +15,6 @@ const BACKEND_URL = import.meta.env.VITE_API_URL;
 const saveItinerary = async (itinerary) => {
     try {
         const response = await Axios.post(BACKEND_URL+"/itinerary/save", itinerary, { withCredentials: true } );
-        console.log(response.data)
         return response.data;
     
     } catch (error) {
@@ -27,7 +26,6 @@ const saveItinerary = async (itinerary) => {
 const deleteChat = async (chatId) => {
     try {
         const delChat =  await Axios.post(BACKEND_URL+"/chat/delete", {chatId}, { withCredentials: true });
-        console.log(delChat.data)
         return "Chat Successfully Deleted";
     } catch (error) {
         console.error("Error Deleting Chat: ", error);
