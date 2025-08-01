@@ -1,12 +1,113 @@
-# React + Vite
+# AI Travel Planner – Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend for the AI Travel Planner web application. It provides a modern, responsive user interface for planning travel itineraries powered by AI, user authentication, and interactive features.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Responsive UI with Material UI and MUI Lab components
+- User authentication (login, signup, password reset)
+- AI-powered itinerary generation and display
+- Dynamic forms with validation
+- Timeline and card-based itinerary visualization
+- Country and city selection with autocomplete
+- Social media integration
+- Theming (light/dark mode)
+- Accessible and mobile-friendly design
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- React (Vite)
+- Material UI (MUI)
+- React Router
+- Axios for API requests
+- Day.js for date handling
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v18+ recommended)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/yourusername/ai-travel-planner.git
+   cd ai-travel-planner/frontend
+   ```
+
+2. Install dependencies:
+   ```sh
+   npm install
+   # or
+   yarn install
+   ```
+
+3. Create a `.env` file in the `frontend` folder (optional, for API base URL):
+   ```
+   VITE_API_URL=http://localhost:5000
+   ```
+
+### Running the App
+
+```sh
+npm run dev
+# or
+yarn dev
+```
+
+The app will run on `http://localhost:5173` by default (Vite).
+
+### Project Structure
+
+```
+frontend/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── context/
+│   ├── api/
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
+├── public/
+│   └── hero_section.mp4
+├── .env
+└── README.md
+```
+
+### Environment Variables
+
+- `VITE_API_URL`: Backend API base URL
+
+### Configuration
+
+- API requests use the base URL from `.env` or proxy (see `api/axios.js`).
+- Static assets (images, videos) go in the `public` folder.
+
+### Scripts
+
+- `npm run dev` – Start development server
+- `npm run build` – Build for production
+- `npm run preview` – Preview production build
+
+### Customization
+
+- Update theme and colors in `src/theme.js` or directly in MUI components.
+- Add or modify pages in `src/pages/`.
+- Add new components in `src/components/`.
+
+### Accessibility & Best Practices
+
+- All forms have validation and accessible labels.
+- Responsive layout for mobile and desktop.
+- Uses semantic HTML and ARIA attributes where needed.
+
+### License
+
+MIT
+
+---
+
+**For backend setup, see [`backend/README.md`](../backend/README.md).**
