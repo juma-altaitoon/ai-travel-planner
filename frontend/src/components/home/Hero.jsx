@@ -66,10 +66,10 @@ export default function Hero () {
             </video>
             
             
-            <Typography variant="h5" sx={{ m: 2, fontWeight:"bold", zIndex: 1, color: "secondary.dark", opacity: 0.9, borderRadius: 2 }}>
+            <Typography variant="h5" sx={{ m: 2, fontWeight:"bold", zIndex: 1, color: "text.secondary", bgcolor:"primary.contrastText", opacity: 0.7, borderRadius: 2 }}>
                 BUILD & PLAN your personalized Itinerary in seconds.
             </Typography>
-            <Typography variant="h4" sx={{ m: 2, fontWeight:"bold", color: "blue", zIndex: 1, opacity: 0.8, maxWidth: "md", borderRadius: 4 }}>
+            <Typography variant="h4" sx={{ m: 2, fontWeight:"bold", color: "text.secondary", bgcolor:"primary.contrastText", zIndex: 1, opacity: 0.6, maxWidth: "md", borderRadius: 4 }}>
                 Explore&nbsp;
                 <TypeAnimation
                     sequence={typingSequence}
