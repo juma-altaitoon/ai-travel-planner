@@ -50,13 +50,13 @@ export default function Itineraries() {
         ?
           <CircularProgress/>
         :
-        <Container sx={{ position: "relative", my: 2, pb: 2, bgcolor: "background.paper", borderRadius: 5, display: "flex", flexDirection: "column", justifyContent: 'space-evenly', alignItems: "center", height: "100%"  }}>
+        <Container sx={{ position: "relative", my: 2, pb: 2, bgcolor: "background.paper", borderRadius: 5, display: "flex", flexDirection: "column", justifyContent: 'space-evenly', alignItems: "center", height: "100%" }}>
             <Typography variant='h5' fontWeight={"bold"} textAlign="center" color='primary.main' sx={{ my: 2 }}>
                 Your Saved Itineraries
             </Typography>
             {itineraryList && itineraryList.length > 0 
             ? 
-                <Grid container spacing={2} >
+                <Grid container spacing={2}  sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start'}}>
                     {itineraryList.map((trip, index) =>(
                         <Grid size={{ xs: 6, sm: 4}} key={index}>
                             <ItineraryCard

@@ -52,7 +52,7 @@ export const updateProfile = async (req, res) => {
             return res.status(404).json({ message: "Profile update failed." });
         }
         if (avatar && oldAvatar){
-            const fullPath = path.join(__dirname, oldAvatar);
+            const fullPath = path.join(__dirname,'..', oldAvatar);
             fs.unlink(fullPath, (error) => {
                 if (error) {
                     console.error("Failed to delete old avatar: ", oldAvatar, ". Error: ", error);

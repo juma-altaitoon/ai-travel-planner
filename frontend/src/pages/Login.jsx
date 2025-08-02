@@ -16,7 +16,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import AuthContext from '../context/AuthContext';
 import { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router';
+import { Link } from 'react-router';
 
 
 export default function Login () {
@@ -24,7 +24,6 @@ export default function Login () {
     const {login, message } = useContext(AuthContext);
     const [ showPassword, setShowPassword ] = useState(false);
     const [ errors, setErrors ] = useState({})
-    const navigate = useNavigate();
 
 
     const validate = () => {
@@ -62,7 +61,8 @@ export default function Login () {
 
             await login(userLogin);
             console.log(message);
-            navigate("/welcome", { replace: true })
+                              
+
         } catch (error) {
             console.error(error.message);
             setErrors({ form: "Login failed. Please check your credentials."});

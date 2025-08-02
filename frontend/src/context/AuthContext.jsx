@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
                 })
         };
         checkAuth();
-    }, [user]);
+    }, []);
 
     const showSnackbar = (message, severity = "info") => {
         setMessage(message);
@@ -72,7 +72,10 @@ export const AuthProvider = ({ children }) => {
                 setIsAuthenticated(true);
                 setUser(response.data.user);
                 showSnackbar("Login Successful.", "success");
-                navigate("/");
+                setTimeout(() => {
+                    navigate("/welcome", { replace: true })  
+                }, 100);
+
             })
             .catch((error) => {
                 console.error("Login Failed: ", error.respose?.data || error.message );

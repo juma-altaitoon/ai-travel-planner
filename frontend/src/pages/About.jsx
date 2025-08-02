@@ -12,10 +12,10 @@ export default function About() {
                 </Paper>
                 <Paper size={{xs: 12, md:6}} elevation={16} square={false} sx={{ bgcolor: "secondary.dark", minWidth:"50%", minHeight:"90%", borderRadius:5, display:"flex", flexDirection:"column", justifyContent: "space-evenly", alignItems:"center", px:4}}>
                     <Stack spacing={6}>
-                        <Typography variant='h2' fontWeight={700} >
+                        <Typography variant='h2'color='primary.dark' fontWeight={700} >
                             About
                         </Typography>
-                        <Typography variant="subtitle1">
+                        <Typography variant="subtitle1" color='primary.light'>
                             Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae temporibus maxime perferendis eveniet ex quae velit iusto! Nisi modi in commodi, qui culpa perferendis. Sit, iusto? Quaerat consequuntur inventore nulla.
                         </Typography>
                     </Stack>

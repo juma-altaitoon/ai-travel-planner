@@ -44,7 +44,7 @@ export default function Profile() {
                 const userProfile = await getProfile();
                 setUser(userProfile);
                 if (userProfile.avatar){
-                    // console.log(`${BACKEND_URL}/${userProfile.avatar}`)
+                    console.log(`${BACKEND_URL}/${userProfile.avatar}`)
                     setAvatarPreview(`${BACKEND_URL}/${userProfile.avatar}`);
                 }        
                 console.log("User profile succcessfully fetched")

@@ -17,6 +17,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import AuthContext from '../context/AuthContext.jsx'
 import { Chip } from '@mui/material';
+import Fade from '@mui/material/Fade';
 import FaceIcon from '@mui/icons-material/Face'
 
 
@@ -36,7 +37,7 @@ export default function Header({ mode, setMode}) {
   const pages = (isAuthenticated ? authPages : normalPages)
 
   useEffect(() => {
-    // console.log("Authentication Status Changed: ", isAuthenticated);
+    console.log("Authentication Status Changed: ", isAuthenticated, user);
   },[isAuthenticated, user])
 
   const handleOpenNavMenu = (event) => {
@@ -133,9 +134,9 @@ export default function Header({ mode, setMode}) {
                 : null }
             </Menu>
           </Box>
-          <Link to={"/"}>
+          {/* <Link to={"/"}>
             <Avatar src={"branding_Icon.png"}  sx={{ display: {xs: 'flex', md:"none"}, m:2, height:40, width:40}}/>
-          </Link>
+          </Link> */}
           <Typography
             variant="h6"
             noWrap
@@ -180,7 +181,9 @@ export default function Header({ mode, setMode}) {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, boxShadow: "0 0 5px 0" }}>
-                  <Chip label={user.username} color='primary' sx={{ fontWeight: "bold" }}/>
+                  <Fade in={Boolean(user?.username)} timeout={500}>
+                    <Chip label={user.username} color='primary' sx={{ fontWeight: "bold" }}/>
+                  </Fade>
                 </IconButton>
               </Tooltip>
               <Menu
