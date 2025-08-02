@@ -68,6 +68,9 @@ app.use('/uploads',(req, res, next) => {
 }, express.static(path.join(__dirname,'uploads')))
 
 // Routes
+app.get('/', (req, res) => {
+    res.send("Hello, World!")
+});
 app.use('/auth', limiter, authRouter);
 app.use('/user', limiter, userRouter);
 app.use('/itinerary', limiter, itineraryRouter);

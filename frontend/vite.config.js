@@ -7,5 +7,4 @@ export default defineConfig({
     allowedHosts: [ 'http://localhost' ]
   },
   plugins: [react()],
-  base: process.env.VITE_BASE_PATH || "ai-travel-planner/frontend"
 })
