@@ -6,12 +6,12 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { AuthProvider } from './context/AuthContext';
 
 createRoot(document.getElementById('root')).render(
-  // <StrictMode>  
+  <StrictMode>  
     <Router>
       <AuthProvider>
         <CssBaseline enableColorScheme/> 
         <App />
       </AuthProvider>    
     </Router>
-  // </StrictMode>,
+  </StrictMode>,
 )
