@@ -5,16 +5,25 @@ dotenv.config();
 
 export const connectMongoDB = async() => {
     try {
-        // console.log(process.env.MONGODB_URI);
         await mongoose.connect(process.env.MONGODB_URI)
-        .then(() => {
-            console.log('Connected to MongoDB.')
-        })
-        .catch((error) => {
-            console.error("MongoDB connection error: ", error)
-        })
+        
+        console.log('Connected to MongoDB.')
+        
+         // Connection logging
+        mongoose.connection.on('connected', () => {
+        console.log('MongoDB connected');
+        });
+
+        mongoose.connection.on('error', (err) => {
+        console.error('MongoDB connection error:', err);
+        });
+
+        mongoose.connection.on('disconnected', () => {
+        console.warn('MongoDB disconnected');
+        });
+
     } catch (error) {
-        console.error("ailed to connect to MongoDB: ", error);
+        console.error("Failed to connect to MongoDB: ", error);
         process.exit(1);
     }
 }
