@@ -33,7 +33,10 @@ const corsOptions = {
             callback(new Error("Not Allowed by CORS"));
         }
     },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],  // Allow specific HTTP methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
     credentials: true,
+
 };
 app.use(cors(corsOptions));
 
@@ -68,12 +71,13 @@ app.use('/uploads',(req, res, next) => {
     next();
 }, express.static(path.join(__dirname,'uploads')))
 
+app.options('*', corsOptions);
 // Routes
 app.get('/', (req, res) => {
     res.send("Hello, World!")
 });
 
-app.options('*', corsOptions)
+
 app.use('/auth', limiter, authRouter);
 app.use('/user', limiter, userRouter);
 app.use('/itinerary', limiter, itineraryRouter);
