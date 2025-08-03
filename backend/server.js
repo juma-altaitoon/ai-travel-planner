@@ -25,7 +25,7 @@ const PORT = process.env.PORT || 5000;
 const allowedOrigins = [process.env.FRONTEND_URL, process.env.BASE_URL ] || null;
 const corsOptions = {
     origin: (origin, callback) => {
-        console.log(origin, process.env.FRONTEND_URL, process.env.BASE_URL )
+        // console.log(origin, process.env.FRONTEND_URL, process.env.BASE_URL )
         if(allowedOrigins.includes(origin) || !origin) {
             callback(null, true);
         } else {
