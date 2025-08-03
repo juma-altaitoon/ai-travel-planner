@@ -35,6 +35,7 @@ const corsOptions = {
     },
     credentials: true,
 };
+app.use(cors(corsOptions));
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -54,8 +55,7 @@ if (process.env.NODE_ENV === 'development') {
     app.use(morgan('combined'));
 }
 // Middleware
-app.use(cors(corsOptions));
-app.options('/*', corsOptions)
+
 app.use(express.json());
 app.use(helmet({
     // allow images/fonts from other origin
@@ -72,6 +72,8 @@ app.use('/uploads',(req, res, next) => {
 app.get('/', (req, res) => {
     res.send("Hello, World!")
 });
+
+app.options('*', corsOptions)
 app.use('/auth', limiter, authRouter);
 app.use('/user', limiter, userRouter);
 app.use('/itinerary', limiter, itineraryRouter);
