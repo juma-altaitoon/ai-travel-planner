@@ -55,7 +55,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 // Middleware
 app.use(cors(corsOptions));
-app.options('*', corsOptions)
+app.options('/*', corsOptions)
 app.use(express.json());
 app.use(helmet({
     // allow images/fonts from other origin
