@@ -71,7 +71,7 @@ app.use('/uploads',(req, res, next) => {
     next();
 }, express.static(path.join(__dirname,'uploads')))
 
-app.options('*', corsOptions);
+// app.options('*', corsOptions);
 // Routes
 app.get('/', (req, res) => {
     res.send("Hello, World!")
