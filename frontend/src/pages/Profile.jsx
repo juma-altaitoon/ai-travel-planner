@@ -1,9 +1,10 @@
-import { Box, Button, Container, Divider, Grid, Typography, Fab, TextField, Avatar } from "@mui/material";
+import { Box, Button, Container, Divider, Grid, Typography, Fab, TextField, Avatar, CircularProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import EditIcon from '@mui/icons-material/Edit';
 import CloudUploadRoundedIcon from '@mui/icons-material/CloudUploadRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import Axios from "axios";
+import { uploadToCloudinary } from "../util/cloudinaryUpload";
 
 const BACKEND_URL = import.meta.env.VITE_API_URL;
 
@@ -34,9 +35,9 @@ export default function Profile() {
     const [ isEdit, setIsEdit ] = useState(false);
     const [ user, setUser ] = useState(null);
     const [ errors, setErrors ] = useState({});
-    const [ avatar, setAvatar ] = useState(null);
+    // const [ avatar, setAvatar ] = useState(null);
     const [ avatarPreview, setAvatarPreview ] = useState(null);
-    
+    const [ uploading, setUploading ] = useState(false);   
 
     useEffect(() => {
         const loadProfile = async () => {
@@ -44,8 +45,8 @@ export default function Profile() {
                 const userProfile = await getProfile();
                 setUser(userProfile);
                 if (userProfile.avatar){
-                    console.log(`${BACKEND_URL}/${userProfile.avatar}`)
-                    setAvatarPreview(`${BACKEND_URL}/${userProfile.avatar}`);
+                    console.log(`${userProfile.avatar}`)
+                    setAvatarPreview(`${userProfile.avatar}`);
                 }        
                 console.log("User profile succcessfully fetched")
             } catch (error) {
@@ -61,13 +62,25 @@ export default function Profile() {
         setIsEdit(!isEdit);
     }
 
-    const handleAvatarChange = (e) => {
+    const handleAvatarChange = async (e) => {
         const file = e.target.files[0];
         if(!file){
             return;
         }
-        setAvatar(file);
-    }
+        setUploading(true);
+        try {
+            const signedData = await Axios.get(BACKEND_URL+"/cloudinary/sign-upload", { withCredentials: true }).then(res => res.data);
+            const { url, publicId } = await uploadToCloudinary(file, signedData);
+
+            setAvatarPreview(url);
+            // setAvatar(url);
+            setUser((u) => ( { ...u, avatar: url, avatarPubId: publicId } ))
+        } catch (error) {
+            console.error("Avatar Upload Failed: ", error);
+        } finally {
+            setUploading(false);
+        }
+    };
 
     // Signup input validation
     const validate = () => {
@@ -98,16 +111,16 @@ export default function Profile() {
         if(Object.keys(errors).length > 0){
             return ;
         }
-        const formData = new FormData();
-        Object.entries(user).forEach(([key, value]) => {
-            formData.append(key, value);
-        })
-        if (avatar) {
-            formData.append("avatar", avatar)
-        }
+        // const formData = new FormData();
+        // Object.entries(user).forEach(([key, value]) => {
+        //     formData.append(key, value);
+        // })
+        // if (avatar) {
+        //     formData.append("avatar", avatar)
+        // }
 
         try {
-            await updateProfile(formData)
+            await updateProfile(user);
             console.log("User profile successfully updated")
             handleEdit();
         } catch (error) {
@@ -134,16 +147,20 @@ export default function Profile() {
             <Box display="flex" flexDirection="row" flexWrap={{xs: "wrap", sm: "nowrap"}} gap={5} sx={{ m: 2, p: 2}}>
                 <Box justifyContent={"center"} alignItems={"center"}>
                     <Avatar src={avatarPreview || undefined} sx={{ width: 120, height: 120, mx: "auto", my: 2, border: "2px solid", borderColor: "primary.light", boxShadow: "0 0 20px 0 grey" }} >
-                        {!avatarPreview && <PersonRoundedIcon fontSize='large'/>}
+                        {/* {!avatarPreview && <PersonRoundedIcon fontSize='large'/>} */}
                     </Avatar>
                     <Box>
                         { isEdit &&
-                        <Button
+                            <Button
                                 component='label'
-                                variant='outlined'
-                                startIcon={<CloudUploadRoundedIcon />}
+                                startIcon={uploading 
+                                    ? <CircularProgress size={25} />
+                                    : <CloudUploadRoundedIcon />
+                                }
+                                disabled={uploading}
+                                sx={{ my: 1 }}
                             >
-                                Update Avatar
+                                { uploading ? "Uploading..." : "Update Avatar" }
                                 <input
                                     type='file'
                                     hidden

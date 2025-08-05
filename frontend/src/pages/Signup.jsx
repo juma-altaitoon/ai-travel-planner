@@ -3,7 +3,7 @@ import { useState, useContext } from 'react';
 import AuthContext from '../context/AuthContext';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import CloudUploadRoundedIcon from '@mui/icons-material/CloudUploadRounded';
-import { Typography, Container, Box, Avatar, Divider, Grid, Button, Fade } from '@mui/material';
+import { Typography, Container, Box, Avatar, Divider, Grid, Button, Fade, CircularProgress } from '@mui/material';
 import { TextField, InputAdornment, IconButton } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -12,7 +12,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import CountrySelect from '../components/itineraryForm/CountrySelect';
+import { uploadToCloudinary } from '../util/cloudinaryUpload';
+import Axios from 'axios';
 
+
+const BACKEND_URL = import.meta.env.VITE_API_URL;
 
 export default function Signup() {
     const [ newUser, setNewUser ] = useState({});
@@ -22,10 +26,10 @@ export default function Signup() {
     const [ errors, setErrors ] = useState({});
     const { signup } = useContext(AuthContext);
     const [ showForm,  setShowForm ] = useState(true);
-    const [ avatar, setAvatar ] = useState(null);
+    // const [ avatar, setAvatar ] = useState(null);
     const [ avatarPreview, setAvatarPreview ] = useState(null);
     const [ countryObject, setCountryObject ] = useState(null);
-
+    const [ uploading, setUploading ] = useState(false);
     
     // Snackbar state
     // const [ openSB, setOpenSB ] = useState(false);
@@ -83,13 +87,24 @@ export default function Signup() {
         setNewUser(data);
     }
 
-    const handleAvatarChange = (e) => {
+    const handleAvatarChange = async (e) => {
         const file = e.target.files[0];
         if(!file){
             return;
         }
-        setAvatar(file);
-        setAvatarPreview(URL.createObjectURL(file));
+        setUploading(true);
+        try {
+            const signedData = await Axios.get(BACKEND_URL+"/cloudinary/sign-upload", { withCredentials: true }).then(res => res.data);
+            
+            const { url, publicId } = await uploadToCloudinary(file, signedData);
+            setAvatarPreview(url);
+            // setAvatar(url);
+            setNewUser((u) => ({ ...u, avatar: url, avatarPubId: publicId }));
+        } catch (error) {
+            console.error("Avatar upload error: ", error);
+        } finally {
+            setUploading(false);
+        }
     }
 
     const handleDOB = (value) => {
@@ -113,15 +128,15 @@ export default function Signup() {
         }
 
         setShowForm(false);
-        const formData = new FormData();
-        Object.entries(newUser).forEach(([key, value]) => {
-            formData.append(key, value);
-        })
-        if (avatar){
-            formData.append("avatar", avatar);
-        }
+        // const formData = new FormData();
+        // Object.entries(newUser).forEach(([key, value]) => {
+        //     formData.append(key, value);
+        // })
+        // if (avatar){
+        //     formData.append("avatar", avatar);
+        // }
         try {    
-            await signup(formData)
+            await signup(newUser);
             
         } catch (error) {
             console.error( "Signup Error: ", error.message)
@@ -299,18 +314,23 @@ export default function Signup() {
                                 />
                             </Grid>
                             <Grid size={{ xs: 12 }}>
-                                <Box display={"flex"} justifyContent={"space-evenly"}>
-                                    <Avatar src={avatarPreview} sx={{ width: 80, height: 80, mx: "auto", my: 1 }} >
-                                        <PersonRoundedIcon fontSize='large'/>
+                                <Box display={"flex"} justifyContent={"center"}>
+                                    <Avatar src={avatarPreview} sx={{ width: 80, height: 80, mx: 1 }} >
+                                        {!avatarPreview && <PersonRoundedIcon fontSize='large'/>}
                                     </Avatar>
 
                                     <Button
                                         component='label'
                                         variant='outlined'
-                                        startIcon={<CloudUploadRoundedIcon />}
+                                        startIcon={
+                                            uploading 
+                                                ? <CircularProgress size={25}/>
+                                                : <CloudUploadRoundedIcon />
+                                            }
+                                        disabled={uploading}
                                         sx={{ mx: "auto" }}
                                     >
-                                        Upload Avatar
+                                        {uploading ? "Uploading" : "Upload Avatar"}
                                         <input
                                             type='file'
                                             hidden
@@ -322,8 +342,8 @@ export default function Signup() {
                             </Grid>
                         </Grid>
                         <Divider sx={{ my: 2 }}/>
-                        <Grid size={"grow"} sx={{ display: 'flex', justifyContent: 'center', m: 3 }}>
-                            <Button type='submit' variant="contained">
+                        <Grid xs={12} sx={{ textAlign: "center", mt: 3 }}>
+                            <Button type='submit' variant="contained" size="large" >
                                 Submit
                             </Button>
                         </Grid>

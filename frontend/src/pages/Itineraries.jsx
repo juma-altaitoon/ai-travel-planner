@@ -50,15 +50,15 @@ export default function Itineraries() {
         ?
           <CircularProgress/>
         :
-        <Container sx={{ position: "relative", my: 2, pb: 2, bgcolor: "background.paper", borderRadius: 5, display: "flex", flexDirection: "column", justifyContent: 'space-evenly', alignItems: "center", height: "100%" }}>
-            <Typography variant='h5' fontWeight={"bold"} textAlign="center" color='primary.main' sx={{ my: 2 }}>
+        <Container maxWidth="lg" sx={{ position: "relative", py: 2, bgcolor: "background.paper", borderRadius: 5 }}>
+            <Typography variant='h5' fontWeight={"bold"} textAlign="center" color='primary.main' gutterBottom>
                 Your Saved Itineraries
             </Typography>
             {itineraryList && itineraryList.length > 0 
             ? 
-                <Grid container spacing={2}  sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start'}}>
+                <Grid container spacing={3}  sx={{ justifyContent: 'center'}}>
                     {itineraryList.map((trip, index) =>(
-                        <Grid size={{ xs: 6, sm: 4}} key={index}>
+                        <Grid size={{ xs: 12, sm: 8, md: 4 }} key={index}>
                             <ItineraryCard
                                 tripId={trip._id}
                                 title={`${trip.city}, ${trip.country} : ${formatDate(trip.startDate)} - ${formatDate(trip.endDate)}`}
@@ -70,15 +70,15 @@ export default function Itineraries() {
                     ))}
                 </Grid>
             :
-            <>
-                <Typography variant='h6' color='secondary.dark' textAlign="center"> You Don't have any Itineraries! </Typography>
+            <Box textAlign={"center"} mt={4}>
+                <Typography variant='h6' color='text.secondary' gutterBottom> You Don't have any Itineraries! </Typography>
                 <Link to={"/itinerary/form"}>
-                  <Button variant='contained' color='primary' size='medium' sx={{ maxWidth: "200px", borderRadius: 5}} >Let's generate one</Button>
+                  <Button variant='contained' color='primary' sx={{ borderRadius: 5 }} >Let's generate one</Button>
                 </Link>
-            </>
+            </Box>
             }
             <Link to="/itinerary/form">
-              <Fab size="large" color="warning" aria-label='add itinerary' sx={{ position: "absolute", right: 10, bottom: 10}} >
+              <Fab size="large" color="warning" aria-label='add itinerary' sx={{ position: "fixed", right: 24, bottom: 24, zIndex: 1000}} >
                 <AddIcon/>
               </Fab>
             </Link>

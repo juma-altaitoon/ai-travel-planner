@@ -13,13 +13,12 @@ export default function ItineraryCard ({ tripId, title, subtitle, imageUrl, onVi
                     src={imageUrl || "image_placeholder.png" }
                     alt={title}
                     sx={{ 
-                        width: "100%",
-                        height: "100%",  
-                        bgcolor: "rgba(0,0,0,0.08)",
+                        height: 180,
+                        objectFit: "cover",  
                         borderRadius: 5
                     }}
                 />
-                <CardContent sx={{ bgcolor: "primary.main", p: 1, borderRadius:2 }}>
+                <CardContent sx={{ bgcolor: "primary.main", p: 1, borderRadius:5 }}>
                     <Typography variant="body2" sx={{ color: "secondary.dark", textTransform: "uppercase" }}>{title}</Typography>
                     <Typography variant='caption' sx={{ mt: 1, color: '#fff' }} >{subtitle}</Typography>
                 </CardContent>

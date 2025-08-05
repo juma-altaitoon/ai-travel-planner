@@ -24,7 +24,7 @@ export const signup = async (req, res) => {
     try {
         // console.log("req.file", req.file)
         // console.log("req.body: ", req.body);
-        const avatar = req.file ? `uploads/avatars/${req.file.filename}` : null;
+        // const avatar = req.file ? `uploads/avatars/${req.file.filename}` : null;
         
         const { 
             username, 
@@ -34,6 +34,8 @@ export const signup = async (req, res) => {
             lastName,
             dateOfBirth,
             country,
+            avatar,
+            avatarPubId,
         } = req.body;
 
         // Check if email is already registered
@@ -52,6 +54,7 @@ export const signup = async (req, res) => {
             dateOfBirth,
             country,
             avatar,
+            avatarPubId,
         })
         await user.save()
         .then((savedUser) => {
@@ -89,7 +92,7 @@ export const login = async (req, res) => {
             {
                 maxAge: 60 * 60 * 1000, // 1 hour
                 httpOnly: true,
-                sameSite: "None",
+                sameSite: process.env.NODE_ENV === "production" ? "None" : "Strict",
                 secure: process.env.NODE_ENV === "production", // Use secure cookies in production
             }
         );

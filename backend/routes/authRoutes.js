@@ -1,7 +1,7 @@
 import express from 'express';
 import auth from '../controllers/authController.js';
 import { authenticate, authorize } from '../middleware/authMiddleware.js';
-import { uploadAvatar } from "../middleware/multerMiddleware.js";
+// import { uploadAvatar } from "../middleware/multerMiddleware.js";
 
 const authRouter = express.Router();
 
@@ -9,7 +9,7 @@ const authRouter = express.Router();
 // Test route
 authRouter.get("/check", authenticate, auth.checkAuth)
 // Public routes
-authRouter.post("/signup", uploadAvatar.single("avatar"), auth.signup)
+authRouter.post("/signup", auth.signup)
 authRouter.post("/login", auth.login);
 authRouter.post("/forgot-password", auth.forgotPassword);
 authRouter.post("/reset-password", auth.resetPassword);

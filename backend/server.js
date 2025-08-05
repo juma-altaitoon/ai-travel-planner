@@ -14,7 +14,7 @@ import helmet from 'helmet';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
-
+import cloudinaryRouter from './routes/cloudinaryRouter.js';
 
 // Load environment variables
 dotenv.config();
@@ -82,6 +82,7 @@ app.use('/auth', limiter, authRouter);
 app.use('/user', limiter, userRouter);
 app.use('/itinerary', limiter, itineraryRouter);
 app.use('/chat', limiter, chatRouter);
+app.use('/cloudinary', limiter, cloudinaryRouter);
 app.use(notFound);
 app.use(errorHandler);
 
