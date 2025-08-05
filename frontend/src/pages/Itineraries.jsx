@@ -50,7 +50,7 @@ export default function Itineraries() {
         ?
           <CircularProgress/>
         :
-        <Container maxWidth="lg" sx={{ position: "relative", py: 2, bgcolor: "background.paper", borderRadius: 5 }}>
+        <Container maxWidth="lg" sx={{ my: 4, position: "relative", py: 2, bgcolor: "background.paper", borderRadius: 5 }}>
             <Typography variant='h5' fontWeight={"bold"} textAlign="center" color='primary.main' gutterBottom>
                 Your Saved Itineraries
             </Typography>

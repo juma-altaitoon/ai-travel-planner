@@ -48,16 +48,16 @@ export default function App() {
           <Route path="/forgot-password" element={<ForgotPassword/>}/>
           <Route path="/reset/:resetToken" element={<PasswordReset />} />
           <Route path='/contact' element={<Contact/>} />
-          <Route path='/user' element={<Profile />} />
-          <Route path='/chat' element={<ChatPage/>} />
-
+          
           <Route element={<ProtectedRoute/>} >
             <Route path='/welcome' element={<WelcomeScreen/>}/>
             <Route path='/Itinerary' element={<Itineraries/>}/>
             <Route path='/Itinerary/:id' element={<ItineraryDetails/>}/>
             <Route path='/Itinerary/form' element={<ItineraryForm/>}/>
             <Route path='/Itinerary/generated' element={<Planner/>}/>
-            
+            <Route path='/user' element={<Profile />} />
+            <Route path='/chat' element={<ChatPage/>} />
+
           </Route>
           <Route path="/404" element={<NotFound />} />
           <Route path='/*' element={<Navigate to="/404"/> } />
