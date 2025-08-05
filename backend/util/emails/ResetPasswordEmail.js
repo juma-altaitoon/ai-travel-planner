@@ -86,7 +86,7 @@ export function resetPasswordEmail(
         <a href="${resetPasswordLink}" class="btn">
           Reset Password
         </a>
-      // </div>
+      </div>
 
       <p>
         If you didn’t request this, just ignore and delete this email.
