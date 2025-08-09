@@ -94,6 +94,7 @@ export const login = async (req, res) => {
                 httpOnly: true,
                 sameSite: process.env.NODE_ENV === "production" ? "None" : "Strict",
                 secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+                // partitioned: true,
             }
         );
         res.status(200).json({ message: "Login successful.", user: user._id});

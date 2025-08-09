@@ -16,7 +16,7 @@ export default function About() {
                             About
                         </Typography>
                         <Typography variant="subtitle1" color='primary.light'>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae temporibus maxime perferendis eveniet ex quae velit iusto! Nisi modi in commodi, qui culpa perferendis. Sit, iusto? Quaerat consequuntur inventore nulla.
+                            Welcome to AI Travel Planner, your intelligent companion for planning unforgettable journeys. We believe travel should be effortless, inspiring, and deeply personal. That's why we built a privacy-first AI platform that helps you discover destinations, craft custom itineraries, and visualize your adventures — all in one place. Whether you're chasing sunsets in Santorini or exploring hidden gems in Kyoto, our app combines smart recommendations with beautiful design to make trip planning feel like part of the adventure.
                         </Typography>
                     </Stack>
                 </Paper>
