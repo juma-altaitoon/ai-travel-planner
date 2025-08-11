@@ -58,7 +58,7 @@ export function welcomeEmail(
   <div class="wrapper">
     <div class="container">
       <img
-        src="${baseUrl}/uploads/static/Adventure_bot.png"
+        src="https://res.cloudinary.com/dqilqusff/image/upload/v1754951554/Branding_Icon_wfayil.png"
         alt="Logo"
         class="logo"
       />

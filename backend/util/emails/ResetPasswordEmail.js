@@ -68,7 +68,7 @@ export function resetPasswordEmail(
   <div class="wrapper">
     <div class="container">
       <img
-        src="${baseUrl}/static/logo.png"
+        src="https://res.cloudinary.com/dqilqusff/image/upload/v1754951554/Branding_Icon_wfayil.png"
         alt="Logo"
         class="logo"
       />
