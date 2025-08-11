@@ -149,7 +149,8 @@ export const deleteChat = async (req, res) => {
         console.error("Chat delete error: ", error.message);
         return res.status(500).json({ message: "Chat delete error.", error: error.message });
     } 
-}
+};
+
 
 
 export default {createChat, createItineraryChat, getChat, getItineraryChatId, getGeneralChatId, postMessage, deleteChat};

@@ -15,6 +15,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import cloudinaryRouter from './routes/cloudinaryRouter.js';
+import contactRouter from './routes/contactRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -83,6 +84,7 @@ app.use('/user', limiter, userRouter);
 app.use('/itinerary', limiter, itineraryRouter);
 app.use('/chat', limiter, chatRouter);
 app.use('/cloudinary', limiter, cloudinaryRouter);
+app.use('/contact', contactRouter);
 app.use(notFound);
 app.use(errorHandler);
 

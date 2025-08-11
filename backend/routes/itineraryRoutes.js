@@ -11,6 +11,7 @@ itineraryRouter.get('/test', itinerary.generateTest);
 itineraryRouter.post('/generate', authenticate, itinerary.generateItinerary);
 itineraryRouter.post('/save', authenticate, itinerary.saveItinerary);
 itineraryRouter.post('/delete', authenticate, itinerary.deleteItinerary);
+itineraryRouter.post('/update', authenticate, itinerary.updateItinerary);
 
 
 export default itineraryRouter;

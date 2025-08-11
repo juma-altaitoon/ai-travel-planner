@@ -25,7 +25,7 @@ const saveItinerary = async (itinerary) => {
 
 const deleteChat = async (chatId) => {
     try {
-        const delChat =  await Axios.post(BACKEND_URL+"/chat/delete", {chatId}, { withCredentials: true });
+        await Axios.post(BACKEND_URL+"/chat/delete", {chatId}, { withCredentials: true });
         return "Chat Successfully Deleted";
     } catch (error) {
         console.error("Error Deleting Chat: ", error);

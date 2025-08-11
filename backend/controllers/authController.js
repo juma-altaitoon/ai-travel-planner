@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import crypto from 'crypto';
-import { sendWelcomeEmail, sendResetPassword } from '../util/sendEmail.js';
+// import { sendWelcomeEmail, sendResetPassword } from '../util/sendEmail.js'; // Resend functions
+import { sendWelcomeEmail, sendResetPassword } from '../util/nodemailerEmail.js'; //Switch to nodemailer
 
 const FRONTEND_URL = process.env.FRONTEND_URL;
 

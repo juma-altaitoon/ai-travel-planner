@@ -47,7 +47,6 @@ export default function ItineraryForm(){
         city: '',
         startDate: null,
         endDate: null,
-        duration: 1,
         preferences: [],
         budget: '',
         additionalRequest: '',
@@ -55,9 +54,9 @@ export default function ItineraryForm(){
     
     // Text to be used in the loading animation 
     const typingSteps = [
-        "Analyzing your prefrences...", 500,
-        "Researching destinations...", 500,
-        "Finalizing your plan...", 2000,
+        "Analyzing your prefrences...", 800,
+        "Researching destinations...", 800,
+        "Finalizing your plan...", 2500,
     ];
 
     const handleChange = (event) => {

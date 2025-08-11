@@ -56,8 +56,9 @@ export default function Chat ({ chatId }) {
         setMessages(prev => [...prev, { role: "user", content }] );
         setIsTyping(true);
         try {
-            const response = await send(chatId, content)
-            setMessages( prev => [...prev, { role: "assistant", content: response }])
+            const response = await send(chatId, content);
+            setMessages( prev => [...prev, { role: "assistant", content: response }]);
+            // await updateItinerary();
         } catch (error) {
             console.error("Chat error: ", error)
             setMessages( prev => [...prev, { role: "assistant", content: "Sorry, something went wrong." }]);

@@ -3,6 +3,7 @@ import { getUnsplashImageUrl } from '../util/getUnsplashImage.js';
 import { getYoutubeLink } from '../util/getYoutubeLink.js';
 import OpenAI from 'openai';
 import dotenv from 'dotenv';
+import Chat from '../models/Chat.js';
 
 
 dotenv.config();
@@ -209,5 +210,48 @@ export const deleteItinerary = async (req, res) => {
     }
 };
 
+export const updateItinerary = async (req, res) => {
+    const { currentItinerary, chatId } = req.body;
+    
+    const data = await Chat.findById(chatId).select("messages");
+    const messageHistory = data.messages;    
+    // console.log("messageHistory: ", messageHistory);
+    const systemMessage = `You are an expert travel advisor helping users plan personalized trips.
+    Input:
+    Current itinerary: ${currentItinerary}
+    Message history: ${messageHistory.slice(-5)}
 
-export default { getItineraries, getItineraryById, generateTest, generateItinerary, saveItinerary, deleteItinerary}
+    If the user is asking to modify the itinerary (example: add/remove/change days or activities),
+    OUTPUT ONLY the full, updated itinerary text in the exact same format. Do not change the JSON format or keys, you can only update the values as per user's chat message history. 
+
+    If the user is NOT asking or prompting to modify the itinerary (informational queries, weather, recommendations, facts),
+    OUTPUT EXACTLY "NO" (without quotes) and nothing else.
+    `.trim();
+
+    try {
+        
+        const response = await client.chat.completions.create({
+            messages: [
+                { role: "system", content: systemMessage },
+            ],
+            temperature: 1.0,
+            top_p: 1.0,
+            model: process.env.OPENAI_MODEL
+        })
+        // console.log("updateItinerary: ", response?.choices[0]?.message)
+        if (response?.choices[0]?.message?.content) {
+            const itinerary = response.choices[0].message.content;
+            console.log("new itinerary: ", itinerary)
+            return res.status(200).json({ message: "Itinerary generated successfully", itinerary });
+        }
+        return res.status(500).json({ message: "Error generating itinerary."});
+        
+    } catch (error) {
+        console.error("Error generating itinerary: ", error.message );
+        return res.status(500).json({ message: "Error generating itinerary.", error: error.message });
+    }
+    
+};
+
+
+export default { getItineraries, getItineraryById, generateTest, generateItinerary, saveItinerary, deleteItinerary, updateItinerary}
